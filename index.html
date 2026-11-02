@@ -2,498 +2,244 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>딱-링 (Tak-Ring)</title>
-    
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Phosphor Icons -->
-    <script src="https://unpkg.com/@phosphor-icons/web"></script>
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
-    
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['"Noto Sans KR"', '"Inter"', 'sans-serif'],
-                        mono: ['"Inter"', 'monospace']
-                    },
-                    colors: {
-                        samsung: {
-                            blue: '#1428A0',
-                            dark: '#0c1a6b'
-                        }
-                    }
-                }
-            }
-        }
-    </script>
     <style>
-        body { background-color: #e5e7eb; }
-        .hide-scrollbar::-webkit-scrollbar { display: none; }
-        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif; }
+        body { background-color: #f5f6f8; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; }
+        .phone-frame { width: 100%; max-width: 480px; height: 100vh; background: #ffffff; display: flex; flex-direction: column; position: relative; box-shadow: 0 0 20px rgba(0,0,0,0.1); }
+        .screen { flex: 1; display: none; flex-direction: column; height: 100%; overflow-y: auto; background: #f8f9fa; }
+        .screen.active { display: flex; }
         
-        #app-container {
-            width: 100%;
-            max-width: 480px;
-            height: 100dvh;
-            max-height: 900px;
-            margin: 0 auto;
-            position: relative;
-            overflow: hidden;
-            background-color: #f9fafb;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-        }
+        /* Splash Screen */
+        #splash-screen { background: #111111; color: white; justify-content: center; align-items: center; text-align: center; }
+        .samsung-logo { font-size: 24px; font-weight: 900; letter-spacing: 2px; color: #ffffff; margin-bottom: 20px; }
+        .splash-title { font-size: 32px; font-weight: bold; color: #0076FF; margin-bottom: 10px; }
+        .splash-sub { font-size: 14px; color: #888888; }
 
-        @media (min-width: 481px) {
-            #app-container {
-                height: 90vh;
-                margin-top: 5vh;
-                border-radius: 2rem;
-                border: 8px solid #1f2937;
-            }
-        }
+        /* Header */
+        .app-header { background: #ffffff; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e1e4e8; position: sticky; top: 0; z-index: 10; }
+        .header-logo { font-size: 16px; font-weight: bold; color: #333; display: flex; align-items: center; gap: 8px; }
+        .header-logo span { color: #0076FF; font-size: 12px; font-weight: normal; }
+        .power-btn { background: none; border: none; font-size: 20px; cursor: pointer; color: #ff3b30; }
+
+        /* Content Area */
+        .content { padding: 20px; flex: 1; }
+        .search-box { display: flex; gap: 8px; margin-bottom: 20px; }
+        .search-box input { flex: 1; padding: 12px 16px; border: 2px solid #0076FF; border-radius: 8px; font-size: 16px; outline: none; }
+        .search-box button { background: #0076FF; color: white; border: none; padding: 0 20px; border-radius: 8px; font-weight: bold; font-size: 16px; cursor: pointer; }
+
+        /* Tabs */
+        .tabs { display: flex; gap: 6px; margin-bottom: 15px; overflow-x: auto; padding-bottom: 5px; }
+        .tab { padding: 8px 14px; background: #e9ecef; border: none; border-radius: 20px; font-size: 13px; font-weight: bold; color: #495057; cursor: pointer; white-space: nowrap; }
+        .tab.active { background: #0076FF; color: white; }
+
+        /* Card List */
+        .card-list { display: flex; flex-direction: column; gap: 10px; }
+        .part-card { background: white; padding: 14px 16px; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center; cursor: pointer; border-left: 4px solid #0076FF; }
+        .part-info .part-name { font-size: 14px; font-weight: bold; color: #333; margin-bottom: 4px; }
+        .part-info .part-code { font-size: 13px; color: #0076FF; font-family: monospace; font-weight: bold; }
+        .material-badge { font-size: 11px; padding: 3px 8px; border-radius: 4px; background: #eef2f7; color: #333; font-weight: bold; }
+        .material-badge.cu { background: #fff3cd; color: #856404; }
+        .material-badge.al { background: #d1ecf1; color: #0c5460; }
+
+        /* Modal */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); justify-content: center; align-items: center; z-index: 100; }
+        .modal-content { background: white; padding: 20px; border-radius: 12px; text-align: center; max-width: 90%; width: 340px; position: relative; }
+        .modal-content img { width: 100%; height: 240px; object-fit: contain; border-radius: 8px; background: #f1f3f5; margin-bottom: 15px; }
+        .modal-content h3 { font-size: 16px; margin-bottom: 5px; color: #333; }
+        .modal-content p { font-size: 13px; color: #666; margin-bottom: 15px; }
+        .close-modal { background: #333; color: white; border: none; padding: 10px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; width: 100%; }
+
+        /* Exit Screen */
+        #exit-screen { justify-content: center; align-items: center; text-align: center; padding: 30px; background: #ffffff; }
+        .exit-icon { font-size: 48px; margin-bottom: 20px; }
+        .exit-title { font-size: 20px; font-weight: bold; color: #333; margin-bottom: 15px; line-height: 1.4; }
+        .exit-sub { font-size: 14px; color: #666; margin-bottom: 30px; }
+        .restart-btn { background: #0076FF; color: white; border: none; padding: 12px 24px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 15px; }
     </style>
 </head>
-<body class="flex items-center justify-center min-h-screen">
+<body>
 
-    <div id="app-container" class="flex flex-col">
-        
-        <!-- 1. Splash Screen -->
-        <div id="screen-splash" class="absolute inset-0 z-50 flex flex-col items-center justify-center bg-samsung-blue text-white transition-opacity duration-500">
-            <div class="absolute top-8 right-5 text-[11px] font-bold text-blue-200 tracking-wide">
-                Made by 남울산센터
-            </div>
-            <div class="flex-1 flex flex-col items-center justify-center gap-6">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 100" class="h-16 w-auto drop-shadow-lg mb-2">
-                    <ellipse cx="150" cy="50" rx="140" ry="45" fill="#ffffff" transform="rotate(-5 150 50)"/>
-                    <text x="50%" y="56%" dominant-baseline="middle" text-anchor="middle" fill="#1428A0" font-family="Arial, Helvetica, sans-serif" font-weight="900" font-size="44" letter-spacing="3">SAMSUNG</text>
-                </svg>
-                <h1 class="text-[40px] font-black tracking-tighter drop-shadow-md text-center leading-tight">
-                    딱-링<br><span class="text-2xl text-blue-200 font-bold">(Tak-Ring)</span>
-                </h1>
-                <p class="text-sm font-medium text-blue-200 bg-black/10 px-4 py-1.5 rounded-full">단번에 찾는 락링 솔루션</p>
-            </div>
-            <div class="pb-16 flex justify-center">
-                <i class="ph ph-spinner animate-spin text-3xl text-blue-300"></i>
-            </div>
+<div class="phone-frame">
+    <!-- 1. Splash Screen -->
+    <div id="splash-screen" class="screen active">
+        <div class="samsung-logo">SAMSUNG</div>
+        <div class="splash-title">딱-링 (Tak-Ring)</div>
+        <div class="splash-sub">Made by 디지털남울산</div>
+    </div>
+
+    <!-- 2. Main Screen -->
+    <div id="main-screen" class="screen">
+        <div class="app-header">
+            <div class="header-logo">SAMSUNG <span>| 딱-링 (Tak-Ring)</span></div>
+            <div style="font-size: 12px; font-weight: bold; color: #0076FF;">Made by 디지털남울산</div>
+            <button class="power-btn" onclick="goExit()" title="종료">⏻</button>
         </div>
-
-        <!-- Header -->
-        <header id="app-header" class="bg-samsung-blue text-white px-5 pt-8 pb-3 flex justify-between items-end shrink-0 shadow-md z-10 hidden">
-            <h1 class="font-bold text-[20px] tracking-tight flex items-center gap-2 cursor-pointer" onclick="resetApp()">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 100" class="h-6 w-auto">
-                    <ellipse cx="150" cy="50" rx="140" ry="45" fill="#ffffff" transform="rotate(-5 150 50)"/>
-                    <text x="50%" y="56%" dominant-baseline="middle" text-anchor="middle" fill="#1428A0" font-family="Arial, Helvetica, sans-serif" font-weight="900" font-size="44" letter-spacing="3">SAMSUNG</text>
-                </svg>
-                딱-링
-            </h1>
-            <div class="flex items-end gap-3">
-                <div class="text-[10px] text-blue-200 font-bold tracking-wide mb-1">
-                    Made by 디지털남울산
+        <div class="content">
+            <div class="search-box">
+                <input type="text" id="modelInput" placeholder="모델명 입력 (예: RF85K9011XG)" onkeypress="if(event.key==='Enter') searchModel()">
+                <button onclick="searchModel()">조회</button>
+            </div>
+            <div id="resultArea" style="display:none;">
+                <div class="tabs">
+                    <button class="tab active" onclick="switchTab('machine')">기계실</button>
+                    <button class="tab" onclick="switchTab('fridge')">냉장실</button>
+                    <button class="tab" onclick="switchTab('freezer')">냉동실</button>
+                    <button class="tab" onclick="switchTab('varRoom')">변온실</button>
                 </div>
-                <button onclick="exitApp()" class="text-white hover:text-red-400 transition-colors">
-                    <i class="ph-fill ph-power text-2xl drop-shadow"></i>
-                </button>
+                <div id="cardList" class="card-list"></div>
             </div>
-        </header>
-
-        <!-- 2. Main Screen -->
-        <div id="screen-main" class="flex-1 flex flex-col hidden bg-gray-50">
-            <div class="bg-white p-4 shadow-sm shrink-0 relative border-b border-gray-200">
-                <div class="flex gap-2">
-                    <div class="relative flex-1">
-                        <i class="ph ph-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-lg"></i>
-                        <input type="text" id="search-input" placeholder="모델명 입력 (예: RF85, RF10)" 
-                            class="w-full border border-gray-300 rounded-lg pl-9 pr-3 py-3 text-[15px] font-medium text-gray-800 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-samsung-blue transition uppercase">
-                    </div>
-                    <button onclick="handleSearch()" class="bg-samsung-blue text-white px-5 py-3 rounded-lg text-[15px] font-bold shadow-md active:scale-95 transition-transform">
-                        조회
-                    </button>
-                </div>
-            </div>
-            <div class="flex-1 flex flex-col items-center justify-center p-6 text-center text-gray-400">
-                <i class="ph ph-magnifying-glass text-5xl mb-3 opacity-30"></i>
-                <p class="text-[16px] font-medium text-gray-500">수리할 냉장고의<br>모델명을 검색해 주세요.</p>
-                <p class="text-[13px] mt-2 opacity-70">풀 모델명을 입력해도 핵심 계열에 맞게<br>자동으로 자재를 찾아줍니다.</p>
-            </div>
-        </div>
-
-        <!-- 3. Result Screen -->
-        <div id="screen-result" class="flex-1 flex flex-col hidden bg-gray-50 h-full overflow-hidden">
-            <div class="bg-white p-4 shadow-sm shrink-0 relative z-10 border-b border-gray-200">
-                <div class="flex gap-2">
-                    <div class="relative flex-1">
-                        <i class="ph ph-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
-                        <input type="text" id="result-input" class="w-full border border-gray-300 rounded-lg pl-9 pr-3 py-3 text-[15px] font-bold text-gray-800 bg-gray-100" readonly>
-                    </div>
-                    <button onclick="resetApp()" class="bg-gray-500 text-white px-5 py-3 rounded-lg text-[15px] font-bold shadow-md active:scale-95 transition">
-                        초기화
-                    </button>
-                </div>
-            </div>
-
-            <div class="w-full h-40 bg-gray-200 relative shrink-0">
-                <img src="https://images.samsung.com/is/image/samsung/p6pim/kr/rf85c9041ap/gallery/kr-bespoke-refrigerator-4-door-rf85c9041ap-452140417?$650_519_PNG$" onerror="this.onerror=null; this.src='https://placehold.co/800x400/1428A0/FFFFFF?text=Samsung+Refrigerator';" alt="Refrigerator" class="w-full h-full object-cover object-top bg-white">
-                <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
-                <div class="absolute bottom-4 left-5 text-white">
-                    <h2 class="text-[12px] font-bold bg-green-500 text-white px-2 py-0.5 rounded inline-flex items-center gap-1 mb-1 shadow">
-                        <i class="ph-fill ph-check-circle"></i> 매칭 완료
-                    </h2>
-                    <div id="result-title" class="text-[18px] font-black tracking-tight drop-shadow-md"></div>
-                </div>
-            </div>
-
-            <div class="bg-white border-b border-gray-200 flex shrink-0 shadow-sm z-10 overflow-x-auto hide-scrollbar">
-                <button onclick="switchTab('machine')" id="tab-machine" class="flex-1 min-w-[70px] py-3 text-[14px] font-medium text-gray-400 border-b-2 border-transparent transition-colors">기계실</button>
-                <button onclick="switchTab('fridge')" id="tab-fridge" class="flex-1 min-w-[70px] py-3 text-[14px] font-bold text-samsung-blue border-b-2 border-samsung-blue transition-colors">냉장실</button>
-                <button onclick="switchTab('freezer')" id="tab-freezer" class="flex-1 min-w-[70px] py-3 text-[14px] font-medium text-gray-400 border-b-2 border-transparent transition-colors">냉동실</button>
-                <button onclick="switchTab('room')" id="tab-room" class="flex-1 min-w-[70px] py-3 text-[14px] font-medium text-gray-400 border-b-2 border-transparent transition-colors">변온실</button>
-            </div>
-
-            <div id="part-list" class="flex-1 p-4 flex flex-col gap-3 overflow-y-auto pb-8 hide-scrollbar">
-                <!-- Cards render here -->
-            </div>
-        </div>
-
-        <!-- 4. Modal Popup -->
-        <div id="part-modal" class="absolute inset-0 bg-black/80 z-50 flex flex-col items-center justify-center p-5 hidden opacity-0 transition-opacity duration-300">
-            <div class="bg-white w-full max-w-[360px] rounded-2xl overflow-hidden shadow-2xl flex flex-col transform transition-transform scale-95" id="modal-content">
-                <div class="px-5 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
-                    <div>
-                        <div id="modal-part-name" class="text-[12px] text-gray-500 font-bold mb-0.5"></div>
-                        <div id="modal-part-code" class="text-[20px] font-black text-samsung-blue font-mono tracking-tighter"></div>
-                    </div>
-                    <button onclick="closeModal()" class="text-gray-500 hover:bg-gray-200 bg-gray-100 w-9 h-9 rounded-full flex items-center justify-center transition-colors">
-                        <i class="ph ph-x text-xl"></i>
-                    </button>
-                </div>
-                
-                <!-- Image or Fallback container -->
-                <div class="bg-gray-100 w-full h-[300px] flex items-center justify-center relative overflow-hidden">
-                    <img id="modal-img" src="" alt="자재 실사" class="w-full h-full object-contain bg-white hidden">
-                    
-                    <div id="modal-fallback" class="hidden flex flex-col items-center justify-center text-gray-400 gap-3">
-                        <i class="ph-fill ph-image-broken text-5xl"></i>
-                        <span class="font-bold text-[15px]">이미지 없음</span>
-                        <span class="text-[11px]">해당 자재의 등록된 사진이 없습니다.</span>
-                    </div>
-                </div>
-                
-                <div class="bg-gray-800 text-gray-300 text-[12px] text-center py-3 font-medium leading-tight">
-                    ※ 실제 현장 자재와 모양/색상을 확인하세요.
-                </div>
-            </div>
-        </div>
-
-        <!-- 5. Exit Screen -->
-        <div id="screen-exit" class="absolute inset-0 z-[60] flex flex-col items-center justify-center bg-gray-900 text-white hidden opacity-0 transition-opacity duration-500">
-            <div class="absolute top-8 right-5 text-[11px] font-bold text-gray-500 tracking-wide">
-                Made by 디지털남울산
-            </div>
-            
-            <div class="flex-1 flex flex-col items-center justify-center gap-6 text-center px-6 w-full">
-                <div class="w-24 h-24 bg-blue-500/10 rounded-full flex items-center justify-center mb-2">
-                    <i class="ph ph-wrench text-6xl text-blue-400 drop-shadow-md"></i>
-                </div>
-                <h1 class="text-[32px] font-black tracking-tight text-gray-100">수고하셨습니다</h1>
-                <div class="text-gray-300 text-[17px] font-medium leading-relaxed bg-gray-800/80 px-6 py-5 rounded-2xl border border-gray-700 shadow-inner w-full max-w-[320px]">
-                    오늘도 <span class="text-blue-400 font-bold">딱(Tak)!</span> 맞는 <span class="text-blue-400 font-bold">락(Lock)</span>링으로<br>한번에 <span class="text-blue-400 font-bold">딱(Tak)!</span> 수리하세요!
-                </div>
-                
-                <button onclick="forceCloseApp()" class="mt-10 flex flex-col items-center gap-2 text-gray-500 hover:text-gray-300 transition-colors active:scale-95">
-                    <i class="ph-fill ph-power text-4xl"></i>
-                    <span class="text-[12px] font-bold tracking-widest uppercase">완전 종료</span>
-                </button>
-            </div>
-        </div>
-
-        <div id="toast" class="absolute bottom-10 left-1/2 -translate-x-1/2 bg-gray-800 text-white px-5 py-3 rounded-xl shadow-lg font-bold text-[14px] z-[70] opacity-0 pointer-events-none transition-opacity duration-300 whitespace-nowrap">
-            메시지
         </div>
     </div>
 
-    <script>
-        // 26 Images Map provided by user
-        const imageMap = {
-            "DA81-10919A": "KakaoTalk_261102_150032_91.jpg",
-            "DA81-10910A": "KakaoTalk_261102_150032_01.jpg",
-            "DA81-10911A": "KakaoTalk_261102_150032_11.jpg",
-            "DA81-10912A": "KakaoTalk_261102_150032_21.jpg",
-            "DA81-10913A": "KakaoTalk_261102_150032_31.jpg",
-            "DA81-10914A": "KakaoTalk_261102_150032_41.jpg",
-            "DA81-10915A": "KakaoTalk_261102_150032_51.jpg",
-            "DA81-10916A": "KakaoTalk_261102_150032_61.jpg",
-            "DA81-10917A": "KakaoTalk_261102_150032_71.jpg",
-            "DA81-10918A": "KakaoTalk_261102_150032_81.jpg",
-            "DA81-10930A": "KakaoTalk_261102_150032_191.jpg",
-            "DA81-10920A": "KakaoTalk_261102_150032_101.jpg",
-            "DA81-10921A": "KakaoTalk_261102_150032_111.jpg",
-            "DA81-10922A": "KakaoTalk_261102_150032_121.jpg",
-            "DA81-10923A": "KakaoTalk_261102_150032_131.jpg",
-            "DA81-10924A": "KakaoTalk_261102_150032_141.jpg",
-            "DA81-10925A": "KakaoTalk_261102_150032_151.jpg",
-            "DA81-10927A": "KakaoTalk_261102_150032_161.jpg",
-            "DA81-10926A": "KakaoTalk_261102_150032_171.jpg",
-            "DA81-10928A": "KakaoTalk_261102_150032_181.jpg",
-            "DA82-03859B": "KakaoTalk_261102_150032_251.jpg",
-            "DA81-11328A": "KakaoTalk_261102_150032_201.jpg",
-            "DA81-10932A": "KakaoTalk_261102_150032_211.jpg",
-            "DA81-10931A": "KakaoTalk_261102_150032_221.jpg",
-            "DA81-11047A": "KakaoTalk_261102_150032_231.jpg",
-            "DA82-03859A": "KakaoTalk_261102_150032_241.jpg"
+    <!-- 4. Exit Screen -->
+    <div id="exit-screen" class="screen">
+        <div class="exit-icon">🛠️</div>
+        <div class="exit-title">오늘도 딱(Tak)! 맞는 락(Lock)링으로<br>한번에 딱(Tak)! 수리하세요!</div>
+        <div class="exit-sub">안전 수칙을 준수하여 완벽한 수리를 완성하세요.</div>
+        <button class="restart-btn" onclick="resetApp()">처음으로 돌아가기</button>
+    </div>
+</div>
+
+<!-- Modal -->
+<div id="photoModal" class="modal" onclick="closeModal()">
+    <div class="modal-content" onclick="event.stopPropagation()">
+        <img id="modalImg" src="" alt="락링 실물 사진">
+        <h3 id="modalTitle">부품명</h3>
+        <p id="modalCode">자재코드</p>
+        <button class="close-modal" onclick="closeModal()">확인</button>
+    </div>
+</div>
+
+<script>
+    // 전체 엑셀 DB 통합 데이터
+    const dbData = {
+        machineRoom: [
+            { part: "콤프고압 (COMP → COND)", code: "DA81-10910A", material: "Cu + Steel" },
+            { part: "응축기 (COND → CLUSTER)", code: "DA81-10911A", material: "Steel + Steel" },
+            { part: "클러스터 (CLUSTER → HOT PIPE)", code: "DA81-10912A", material: "Steel + Steel" },
+            { part: "클러스터 (옵션)", code: "DA81-10913A", material: "Steel + Steel" },
+            { part: "드라이어 입구 (HOT PIPE → DRYER)", code: "DA81-10914A", material: "Cu + Steel" },
+            { part: "드라이어 입구 (옵션)", code: "DA81-10915A", material: "Cu + Steel" },
+            { part: "드라이어 출구 (DRYER → STEP V/V)", code: "DA81-10916A", material: "Cu + Steel" },
+            { part: "드라이어 출구 (옵션)", code: "DA81-10917A", material: "Cu + Steel" },
+            { part: "스텝밸브 출구 (STEP V/V → CAPILLARY)", code: "DA81-10918A", material: "Cu + Cu" },
+            { part: "스텝밸브 출구 (옵션)", code: "DA81-10919A", material: "Cu + Cu" },
+            { part: "콤프 저압/진공부", code: "DA81-10920A", material: "Cu + Cu" }
+        ],
+        models: [
+            { pattern: "RF85K", series: "4도어 (FDR)", year: "16년형", fridge: { evapIn: "DA81-10924A", evapOut: "DA81-10930A", noWeld: "DA81-11148A" }, freezer: { evapIn: "DA81-10928A", evapOut: "DA81-10931A", noWeld: "DA81-11153B" }, varRoom: { evapIn: "DA81-10924A", evapOut: "DA81-10931A", noWeld: "DA81-11151A" } },
+            { pattern: "RF10", series: "셰프 (RF9900)", year: "15~22년형", fridge: { evapIn: "DA81-10924A", evapOut: "DA81-10930A", noWeld: "DA81-11147B" }, freezer: { evapIn: "DA81-10928A", evapOut: "DA81-10931A", noWeld: "DA81-11153B" }, varRoom: { evapIn: "DA81-10924A", evapOut: "DA81-10931A", noWeld: "DA81-11150A" } },
+            { pattern: "RF64J", series: "4도어 (FDR)", year: "15년형", fridge: { evapIn: "DA81-10924A", evapOut: "DA81-10930A", noWeld: "DA81-11147A" }, freezer: { evapIn: "DA81-10928A", evapOut: "DA81-10931A", noWeld: "DA81-11153B" }, varRoom: { evapIn: "DA81-10924A", evapOut: "DA81-10931A", noWeld: "DA81-11151A" } },
+            { pattern: "RF85B", series: "4도어 (FDR)", year: "22년형", fridge: { evapIn: "DA81-10923A", evapOut: "DA81-10930A", noWeld: "DA81-11148A" }, freezer: { evapIn: "DA81-10928A", evapOut: "DA81-10931A", noWeld: "DA81-11153E" }, varRoom: { evapIn: "DA81-10924A", evapOut: "DA81-10931A", noWeld: "DA81-11151E" } },
+            { pattern: "RF66", series: "4도어 (FDR)", year: "17년형", fridge: { evapIn: "DA81-10924A", evapOut: "DA81-10930A", noWeld: "DA81-11152A" }, freezer: { evapIn: "DA81-10928A", evapOut: "DA81-10931A", noWeld: "DA81-11148A" }, varRoom: { evapIn: "DA81-10924A", evapOut: "DA81-10931A", noWeld: "DA81-11151L" } },
+            { pattern: "RF85M", series: "4도어 (FDR)", year: "17년형", fridge: { evapIn: "DA81-10924A", evapOut: "DA81-10930A", noWeld: "DA81-11148A" }, freezer: { evapIn: "DA81-10928A", evapOut: "DA81-10931A", noWeld: "DA81-11153B" }, varRoom: { evapIn: "DA81-10924A", evapOut: "DA81-10931A", noWeld: "DA81-11151A" } },
+            { pattern: "RF66N", series: "4도어 (FDR)", year: "18년형", fridge: { evapIn: "DA81-10923A", evapOut: "DA81-10930A", noWeld: "DA81-11152A" }, freezer: { evapIn: "DA81-10928A", evapOut: "DA81-10931A", noWeld: "DA81-11153E" }, varRoom: { evapIn: "DA81-10924A", evapOut: "DA81-10931A", noWeld: "DA81-11151L" } },
+            { pattern: "RF73N", series: "4도어 (FDR)", year: "18년형", fridge: { evapIn: "DA81-10923A", evapOut: "DA81-10930A", noWeld: "DA81-11148A" }, freezer: { evapIn: "DA81-10928A", evapOut: "DA81-10931A", noWeld: "DA81-11153B" }, varRoom: { evapIn: "DA81-10924A", evapOut: "DA81-10931A", noWeld: "DA81-11150B" } },
+            { pattern: "RF85N", series: "4도어 (FDR)", year: "18년형", fridge: { evapIn: "DA81-10923A", evapOut: "DA81-10930A", noWeld: "DA81-11148A" }, freezer: { evapIn: "DA81-10928A", evapOut: "DA81-10931A", noWeld: "DA81-11153B" }, varRoom: { evapIn: "DA81-10924A", evapOut: "DA81-10931A", noWeld: "DA81-11151A" } },
+            { pattern: "RF60A", series: "4도어 (FDR)", year: "21년형", fridge: { evapIn: "DA81-10923A", evapOut: "DA81-10930A", noWeld: "DA81-11149A" }, freezer: { evapIn: "DA81-10928A", evapOut: "DA81-10931A", noWeld: "DA81-11153E" }, varRoom: { evapIn: "DA81-10924A", evapOut: "DA81-10931A", noWeld: "DA81-11151C" } },
+            { pattern: "RF85A", series: "4도어 (FDR)", year: "21년형", fridge: { evapIn: "DA81-10923A", evapOut: "DA81-10930A", noWeld: "DA81-11148A" }, freezer: { evapIn: "DA81-10928A", evapOut: "DA81-10931A", noWeld: "DA81-11153B" }, varRoom: { evapIn: "DA81-10924A", evapOut: "DA81-10931A", noWeld: "DA81-11151A" } }
+        ]
+    };
+
+    let currentModelData = null;
+    let activeTabName = 'machine';
+
+    // Splash 자동 전환 (2초 후 메인으로)
+    setTimeout(() => {
+        document.getElementById('splash-screen').classList.remove('active');
+        document.getElementById('main-screen').classList.add('active');
+    }, 2000);
+
+    function searchModel() {
+        const query = document.getElementById('modelInput').value.trim().toUpperCase();
+        if (!query) {
+            alert('모델명을 입력해주세요.');
+            return;
+        }
+
+        // 입력한 모델명에 해당하는 패턴 매칭 검색
+        let found = dbData.models.find(m => query.includes(m.pattern));
+        
+        // 매칭되는 모델이 없으면 기본 기본 모델(RF85K) 데이터 연결
+        currentModelData = found ? found : dbData.models[0];
+
+        document.getElementById('resultArea').style.display = 'block';
+        renderCards(activeTabName);
+    }
+
+    function switchTab(tabName) {
+        activeTabName = tabName;
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        event.target.classList.add('active');
+        renderCards(tabName);
+    }
+
+    function renderCards(category) {
+        const listEl = document.getElementById('cardList');
+        listEl.innerHTML = '';
+
+        let items = [];
+        if (category === 'machine') {
+            items = dbData.machineRoom;
+        } else if (currentModelData && currentModelData[category]) {
+            const cat = currentModelData[category];
+            items = [
+                { part: "에바 입구 (Evap In)", code: cat.evapIn, material: "Cu" },
+                { part: "에바 출구 (Evap Out)", code: cat.evapOut, material: "Cu" },
+                { part: "무용접 에바", code: cat.noWeld, material: "AL" }
+            ];
+        }
+
+        items.forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'part-card';
+            card.onclick = () => openModal(item.part, item.code);
+            card.innerHTML = `
+                <div class="part-info">
+                    <div class="part-name">${item.part}</div>
+                    <div class="part-code">${item.code}</div>
+                </div>
+                <div class="material-badge ${item.material.toLowerCase().includes('al') ? 'al' : 'cu'}">${item.material}</div>
+            `;
+            listEl.appendChild(card);
+        });
+    }
+
+    function openModal(partName, partCode) {
+        document.getElementById('modalTitle').innerText = partName;
+        document.getElementById('modalCode').innerText = partCode;
+        
+        const imgEl = document.getElementById('modalImg');
+        // 대문자 .JPG 확장자 파일 매핑 (서버 인식 오류 방지)
+        imgEl.src = `${partCode}.JPG`;
+        
+        // 이미지가 없을 경우 깔끔한 안내문구로 대체
+        imgEl.onerror = function() {
+            this.src = "";
+            this.alt = "등록된 실물 사진이 없습니다.";
         };
 
-        // Common Machine Room Parts
-        const globalMachineParts = [
-            { name: "콤프고압 (COMP → COND)", code: "DA81-10910A", material: "Cu" },
-            { name: "응축기 (COND → CLUSTER)", code: "DA81-10911A", material: "Steel" },
-            { name: "클러스터 (CLUSTER → HOT PIPE)", code: "DA81-10912A", material: "Steel" },
-            { name: "드라이어 입구", code: "DA81-10914A", material: "Cu" },
-            { name: "드라이어 출구", code: "DA81-10916A", material: "Cu" },
-            { name: "스텝밸브 출구", code: "DA81-10918A", material: "Cu" },
-            { name: "콤프 저압/진공부", code: "DA81-10920A", material: "Cu" },
-            { name: "스텝밸브 미적용 키트", code: "DA82-03859B", material: "Assy" },
-            { name: "스텝밸브 적용 키트", code: "DA82-03859A", material: "Assy" }
-        ];
+        document.getElementById('photoModal').style.display = 'flex';
+    }
 
-        const partsDB = [
-            {
-                pattern: "RF85K",
-                desc: "16년형 4도어 (FDR)",
-                fridge: [
-                    { name: "에바 입구 (Inlet)", code: "DA81-10924A", material: "Cu" },
-                    { name: "에바 출구 (Outlet)", code: "DA81-10930A", material: "Cu" },
-                    { name: "무용접 에바 (Ass'y)", code: "DA81-11148A", material: "Assy" }
-                ],
-                freezer: [
-                    { name: "에바 입구 (Inlet)", code: "DA81-10928A", material: "Cu" },
-                    { name: "에바 출구 (Outlet)", code: "DA81-10931A", material: "Cu" },
-                    { name: "무용접 에바 (Ass'y)", code: "DA81-11153B", material: "Assy" }
-                ],
-                room: [
-                    { name: "에바 입구 (Inlet)", code: "DA81-10924A", material: "Cu" },
-                    { name: "에바 출구 (Outlet)", code: "DA81-10931A", material: "Cu" },
-                    { name: "무용접 에바 (Ass'y)", code: "DA81-11151A", material: "Assy" }
-                ]
-            },
-            {
-                pattern: "RF10",
-                desc: "셰프 컬렉션 (RF9900)",
-                fridge: [
-                    { name: "에바 입구 (Inlet)", code: "DA81-10924A", material: "Cu" },
-                    { name: "에바 출구 (Outlet)", code: "DA81-10930A", material: "Cu" },
-                    { name: "무용접 에바 (Ass'y)", code: "DA81-11147B", material: "Assy" }
-                ],
-                freezer: [
-                    { name: "에바 입구 (Inlet)", code: "DA81-10928A", material: "Cu" },
-                    { name: "에바 출구 (Outlet)", code: "DA81-10931A", material: "Cu" },
-                    { name: "무용접 에바 (Ass'y)", code: "DA81-11153E", material: "Assy" }
-                ],
-                room: [
-                    { name: "에바 입구 (Inlet)", code: "DA81-10924A", material: "Cu" },
-                    { name: "에바 출구 (Outlet)", code: "DA81-10931A", material: "Cu" },
-                    { name: "무용접 에바 (Ass'y)", code: "DA81-11151E", material: "Assy" }
-                ]
-            },
-            {
-                pattern: "RF64J",
-                desc: "15년형 4도어",
-                fridge: [
-                    { name: "에바 입구 (Inlet)", code: "DA81-10924A", material: "Cu" },
-                    { name: "에바 출구 (Outlet)", code: "DA81-10930A", material: "Cu" },
-                    { name: "무용접 에바 (Ass'y)", code: "DA81-11147A", material: "Assy" }
-                ],
-                freezer: [
-                    { name: "에바 입구 (Inlet)", code: "DA81-10928A", material: "Cu" },
-                    { name: "에바 출구 (Outlet)", code: "DA81-10931A", material: "Cu" },
-                    { name: "무용접 에바 (Ass'y)", code: "DA81-11153B", material: "Assy" }
-                ],
-                room: [
-                    { name: "무용접 에바 (이금 有)", code: "DA81-11150A", material: "Assy" },
-                    { name: "무용접 에바 (이금 無)", code: "DA81-11151A", material: "Assy" }
-                ]
-            }
-        ];
+    function closeModal() {
+        document.getElementById('photoModal').style.display = 'none';
+    }
 
-        let currentData = null;
-        let currentTab = 'fridge';
+    function goExit() {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.getElementById('exit-screen').classList.add('active');
+    }
 
-        window.onload = () => {
-            setTimeout(() => {
-                const splash = document.getElementById('screen-splash');
-                splash.classList.add('opacity-0');
-                setTimeout(() => {
-                    splash.classList.add('hidden');
-                    document.getElementById('app-header').classList.remove('hidden');
-                    document.getElementById('screen-main').classList.remove('hidden');
-                }, 500); 
-            }, 1500); // 1.5 seconds logic
-            
-            document.getElementById('search-input').addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') handleSearch();
-            });
-        };
+    function resetApp() {
+        document.getElementById('exit-screen').classList.remove('active');
+        document.getElementById('main-screen').classList.add('active');
+        document.getElementById('modelInput').value = '';
+        document.getElementById('resultArea').style.display = 'none';
+    }
+</script>
 
-        function handleSearch() {
-            const inputVal = document.getElementById('search-input').value.trim().toUpperCase();
-            if (inputVal === '') {
-                showToast("모델명을 입력해주세요.");
-                return;
-            }
-
-            const matchedData = partsDB.find(p => inputVal.includes(p.pattern) || p.pattern.includes(inputVal));
-
-            if (matchedData) {
-                currentData = matchedData;
-                currentTab = 'fridge';
-                document.getElementById('result-input').value = inputVal;
-                document.getElementById('result-title').innerHTML = `${matchedData.pattern}** 계열 <span class="text-sm font-medium ml-1">(${matchedData.desc})</span>`;
-                
-                document.getElementById('screen-main').classList.add('hidden');
-                document.getElementById('screen-result').classList.remove('hidden');
-                switchTab('fridge');
-            } else {
-                showToast("해당 모델의 락링 데이터를 찾을 수 없습니다.");
-            }
-        }
-
-        function resetApp() {
-            document.getElementById('search-input').value = '';
-            document.getElementById('screen-result').classList.add('hidden');
-            document.getElementById('screen-main').classList.remove('hidden');
-            currentData = null;
-        }
-
-        function switchTab(tabName) {
-            currentTab = tabName;
-            const tabs = ['machine', 'fridge', 'freezer', 'room'];
-            tabs.forEach(t => {
-                const btn = document.getElementById(`tab-${t}`);
-                if (!btn) return;
-                if (t === tabName) {
-                    btn.className = "flex-1 min-w-[70px] py-3 text-[14px] font-bold text-samsung-blue border-b-2 border-samsung-blue transition-colors";
-                } else {
-                    btn.className = "flex-1 min-w-[70px] py-3 text-[14px] font-medium text-gray-400 border-b-2 border-transparent transition-colors";
-                }
-            });
-            renderParts();
-        }
-
-        function renderParts() {
-            const listContainer = document.getElementById('part-list');
-            listContainer.innerHTML = '';
-            
-            let partsArray = [];
-            if (currentTab === 'machine') {
-                partsArray = globalMachineParts;
-            } else if (currentData && currentData[currentTab]) {
-                partsArray = currentData[currentTab];
-            }
-
-            partsArray.forEach(part => {
-                let borderColor = 'bg-gray-400';
-                let badgeClass = 'bg-gray-100 text-gray-600 border-gray-200';
-                let badgeText = part.material || '공용';
-
-                if (part.material === 'Cu') {
-                    borderColor = 'bg-red-500';
-                    badgeClass = 'bg-red-50 text-red-600 border-red-200';
-                    badgeText = '동관(Cu)';
-                } else if (part.material === 'AL') {
-                    borderColor = 'bg-blue-500';
-                    badgeClass = 'bg-blue-50 text-blue-600 border-blue-200';
-                    badgeText = '알루미늄(AL)';
-                }
-
-                // Check if image exists for icon indicator
-                const hasImage = !!imageMap[part.code];
-                const iconColor = hasImage ? 'text-samsung-blue' : 'text-gray-300';
-
-                const cardHTML = `
-                    <div onclick="openModal('${part.name}', '${part.code}')" class="bg-white p-4 rounded-xl shadow-sm border border-gray-200 flex flex-col gap-2 relative pl-5 cursor-pointer hover:bg-gray-50 active:scale-[0.98] transition-all">
-                        <div class="absolute top-0 left-0 w-1.5 h-full ${borderColor} rounded-l-xl"></div>
-                        <div class="flex justify-between items-start w-full">
-                            <span class="font-bold text-gray-800 text-[15px]">${part.name}</span>
-                            <span class="${badgeClass} border text-[11px] font-bold px-2 py-0.5 rounded-full">${badgeText}</span>
-                        </div>
-                        <div class="flex justify-between items-end mt-1">
-                            <div class="text-samsung-blue font-black text-[22px] font-mono tracking-tight">${part.code}</div>
-                            <div class="${iconColor}"><i class="${hasImage ? 'ph-fill' : 'ph'} ph-image text-xl"></i></div>
-                        </div>
-                    </div>
-                `;
-                listContainer.insertAdjacentHTML('beforeend', cardHTML);
-            });
-        }
-
-        function openModal(name, code) {
-            document.getElementById('modal-part-name').innerText = name;
-            document.getElementById('modal-part-code').innerText = code;
-            
-            const imgEl = document.getElementById('modal-img');
-            const fallbackEl = document.getElementById('modal-fallback');
-            
-            // Image mapping logic
-            const targetImage = imageMap[code];
-            
-            if (targetImage) {
-                imgEl.src = targetImage;
-                imgEl.classList.remove('hidden');
-                fallbackEl.classList.add('hidden');
-            } else {
-                imgEl.src = '';
-                imgEl.classList.add('hidden');
-                fallbackEl.classList.remove('hidden');
-            }
-            
-            const modal = document.getElementById('part-modal');
-            const modalContent = document.getElementById('modal-content');
-            
-            modal.classList.remove('hidden');
-            setTimeout(() => {
-                modal.classList.remove('opacity-0');
-                modalContent.classList.remove('scale-95');
-                modalContent.classList.add('scale-100');
-            }, 10);
-        }
-
-        function closeModal() {
-            const modal = document.getElementById('part-modal');
-            const modalContent = document.getElementById('modal-content');
-            
-            modal.classList.add('opacity-0');
-            modalContent.classList.remove('scale-100');
-            modalContent.classList.add('scale-95');
-            
-            setTimeout(() => {
-                modal.classList.add('hidden');
-            }, 300);
-        }
-
-        function exitApp() {
-            const exitScreen = document.getElementById('screen-exit');
-            exitScreen.classList.remove('hidden');
-            setTimeout(() => {
-                exitScreen.classList.remove('opacity-0');
-            }, 10);
-        }
-
-        function forceCloseApp() {
-            showToast("앱이 종료되었습니다. (브라우저 탭을 닫아주세요)");
-            setTimeout(() => window.close(), 1500);
-        }
-
-        let toastTimeout;
-        function showToast(msg) {
-            const toast = document.getElementById('toast');
-            toast.innerText = msg;
-            toast.classList.remove('opacity-0');
-            clearTimeout(toastTimeout);
-            toastTimeout = setTimeout(() => toast.classList.add('opacity-0'), 2500);
-        }
-    </script>
 </body>
 </html>
