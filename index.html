@@ -13,15 +13,15 @@
         
         /* Splash Screen */
         #splash-screen { background: #111111; color: white; justify-content: center; align-items: center; text-align: center; }
-        .samsung-logo { font-size: 24px; font-weight: 900; letter-spacing: 2px; color: #ffffff; margin-bottom: 20px; }
+        .splash-logo-img { width: 180px; height: auto; margin-bottom: 20px; object-fit: contain; }
         .splash-title { font-size: 32px; font-weight: bold; color: #0076FF; margin-bottom: 10px; }
         .splash-sub { font-size: 14px; color: #888888; }
 
         /* Header */
         .app-header { background: #ffffff; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e1e4e8; position: sticky; top: 0; z-index: 10; }
-        .header-brand { display: flex; flex-direction: column; }
-        .header-samsung { font-size: 14px; font-weight: 900; letter-spacing: 1px; color: #1428A0; }
-        .header-title { font-size: 15px; font-weight: bold; color: #333; }
+        .header-brand { display: flex; align-items: center; gap: 10px; }
+        .header-logo-img { width: 90px; height: auto; object-fit: contain; }
+        .header-title { font-size: 15px; font-weight: bold; color: #333; border-left: 2px solid #ddd; padding-left: 10px; }
         .header-center { font-size: 11px; font-weight: bold; color: #0076FF; background: #eef2f7; padding: 4px 8px; border-radius: 4px; }
         .power-btn { background: none; border: none; font-size: 20px; cursor: pointer; color: #ff3b30; }
 
@@ -66,7 +66,7 @@
 <div class="phone-frame">
     <!-- 1. Splash Screen -->
     <div id="splash-screen" class="screen active">
-        <div class="samsung-logo">SAMSUNG</div>
+        <img src="logo.png" alt="SAMSUNG" class="splash-logo-img" onerror="this.style.display='none'">
         <div class="splash-title">딱-링 (Tak-Ring)</div>
         <div class="splash-sub">Made by 디지털남울산</div>
     </div>
@@ -75,8 +75,8 @@
     <div id="main-screen" class="screen">
         <div class="app-header">
             <div class="header-brand">
-                <div class="header-samsung">SAMSUNG</div>
-                <div class="header-title">딱-링 (Tak-Ring)</div>
+                <img src="logo.png" alt="SAMSUNG" class="header-logo-img" onerror="this.style.display='none'">
+                <div class="header-title">딱-링</div>
             </div>
             <div class="header-center">디지털남울산</div>
             <button class="power-btn" onclick="goExit()" title="종료">⏻</button>
@@ -221,7 +221,7 @@
         
         const imgEl = document.getElementById('modalImg');
         
-        // 대소문자 확장자 모두 대응하도록 1차 시도 (.JPG), 실패 시 2차 (.jpg) 자동 전환 로직 탑재
+        // 업로드하신 사진 파일명 포맷(대문자 .JPG)에 맞춰 정확히 매칭되도록 설정
         imgEl.src = `${partCode}.JPG`;
         imgEl.onerror = function() {
             this.onerror = function() {
