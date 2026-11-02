@@ -11,21 +11,20 @@
         .screen { flex: 1; display: none; flex-direction: column; height: 100%; overflow-y: auto; background: #f8f9fa; }
         .screen.active { display: flex; }
         
-        /* Splash Screen */
-        #splash-screen { background: #111111; color: white; justify-content: center; align-items: center; text-align: center; padding: 20px; }
-        .splash-logo-box { background: #1428A0; border-radius: 50px; width: 220px; height: 60px; display: flex; justify-content: center; align-items: center; margin: 0 auto 25px auto; box-shadow: 0 4px 15px rgba(20,40,160,0.4); transform: rotate(-5deg); }
-        .splash-logo-text { color: white; font-size: 26px; font-weight: 900; letter-spacing: 3px; font-style: italic; }
-        .splash-title { font-size: 34px; font-weight: 900; color: #ffffff; margin-bottom: 12px; letter-spacing: -1px; }
-        .splash-title span { color: #0076FF; }
-        .splash-sub { font-size: 15px; color: #bbbbbb; font-weight: 500; }
+        /* Splash Screen (흰색 배경, 상단 서브 문구 + 로고 + 하단 타이틀 배치) */
+        #splash-screen { background: #ffffff; color: #333; justify-content: center; align-items: center; text-align: center; padding: 30px; }
+        .splash-logo-img { width: 220px; height: auto; margin: 20px 0; object-fit: contain; }
+        .splash-desc { font-size: 15px; font-weight: bold; color: #0076FF; margin-bottom: 5px; letter-spacing: -0.5px; }
+        .splash-title { font-size: 32px; font-weight: 900; color: #000000; margin-top: 5px; letter-spacing: -1px; }
+        .splash-title span { color: #555555; font-size: 24px; }
+        .splash-maker { font-size: 13px; color: #888888; font-weight: bold; margin-top: 30px; }
 
-        /* Header */
+        /* Header (흰색 배경 및 검정색 굵은 타이틀 적용) */
         .app-header { background: #ffffff; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e1e4e8; position: sticky; top: 0; z-index: 10; }
         .header-brand { display: flex; align-items: center; gap: 10px; }
-        .header-logo-box { background: #1428A0; border-radius: 20px; padding: 4px 12px; display: flex; justify-content: center; align-items: center; transform: rotate(-4deg); }
-        .header-logo-text { color: white; font-size: 12px; font-weight: 900; letter-spacing: 1px; font-style: italic; }
-        .header-title-box { display: flex; flex-direction: column; }
-        .header-main-title { font-size: 15px; font-weight: 900; color: #111; }
+        .header-logo-img { width: 85px; height: auto; object-fit: contain; }
+        .header-title-box { display: flex; flex-direction: column; border-left: 2px solid #ddd; padding-left: 10px; }
+        .header-main-title { font-size: 15px; font-weight: 900; color: #000000; }
         .header-sub-title { font-size: 11px; font-weight: bold; color: #0076FF; }
         .header-center { font-size: 11px; font-weight: bold; color: #555; background: #eef2f7; padding: 4px 8px; border-radius: 4px; }
         .power-btn { background: none; border: none; font-size: 20px; cursor: pointer; color: #ff3b30; }
@@ -71,20 +70,17 @@
 <div class="phone-frame">
     <!-- 1. Splash Screen -->
     <div id="splash-screen" class="screen active">
-        <div class="splash-logo-box">
-            <div class="splash-logo-text">SAMSUNG</div>
-        </div>
+        <div class="splash-desc">한번에 딱! 자재코드를 찾아내는!</div>
+        <img src="SAMSUNG.JPG" alt="SAMSUNG" class="splash-logo-img" onerror="this.src='SAMSUNG.jpg';">
         <div class="splash-title">딱-링 <span>(Tak-Ring)</span></div>
-        <div class="splash-sub">Made by 디지털남울산</div>
+        <div class="splash-maker">Made by 디지털남울산</div>
     </div>
 
     <!-- 2. Main Screen -->
     <div id="main-screen" class="screen">
         <div class="app-header">
             <div class="header-brand">
-                <div class="header-logo-box">
-                    <div class="header-logo-text">SAMSUNG</div>
-                </div>
+                <img src="SAMSUNG.JPG" alt="SAMSUNG" class="header-logo-img" onerror="this.src='SAMSUNG.jpg';">
                 <div class="header-title-box">
                     <div class="header-main-title">딱-링 (Tak-Ring)</div>
                     <div class="header-sub-title">Lock-Ring Guide</div>
@@ -232,8 +228,6 @@
         document.getElementById('modalCode').innerText = partCode;
         
         const imgEl = document.getElementById('modalImg');
-        
-        // 업로드하신 사진 파일명 포맷(대문자 .JPG)에 맞춰 정확히 매칭되도록 설정
         imgEl.src = `${partCode}.JPG`;
         imgEl.onerror = function() {
             this.onerror = function() {
