@@ -13,13 +13,13 @@
         .screen { flex: 1; display: none; flex-direction: column; height: 100%; overflow-y: auto; background: #ffffff; }
         .screen.active { display: flex; }
         
-        /* Splash Screen */
+        /* Splash Screen (냉장고 이미지 메인 배치) */
         #splash-screen { background: #ffffff; color: #333; justify-content: center; align-items: center; text-align: center; padding: 30px; }
-        .splash-logo-img { width: 220px; height: auto; margin: 20px 0; object-fit: contain; }
-        .splash-desc { font-size: 15px; font-weight: bold; color: #0076FF; margin-bottom: 5px; letter-spacing: -0.5px; }
-        .splash-title { font-size: 32px; font-weight: 900; color: #000000; margin-top: 5px; letter-spacing: -1px; }
-        .splash-title span { color: #555555; font-size: 22px; }
-        .splash-maker { font-size: 13px; color: #888888; font-weight: bold; margin-top: 30px; }
+        .splash-desc { font-size: 16px; font-weight: bold; color: #0076FF; margin-bottom: 12px; letter-spacing: -0.5px; }
+        .splash-main-img { width: 170px; height: 260px; object-fit: contain; margin: 10px 0; }
+        .splash-title { font-size: 32px; font-weight: 900; color: #000000; margin-top: 10px; letter-spacing: -1px; }
+        .splash-title span { color: #555555; font-size: 22px; font-weight: 700; }
+        .splash-maker { font-size: 13px; color: #888888; font-weight: bold; margin-top: 25px; }
 
         /* Warning Notice Screen */
         .notice-top-bar { background: #0076FF; color: white; padding: 14px 20px; font-size: 18px; font-weight: 900; }
@@ -41,7 +41,7 @@
         /* Header */
         .app-header { background: #ffffff; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e1e4e8; position: sticky; top: 0; z-index: 10; }
         .header-brand { display: flex; align-items: center; gap: 10px; }
-        .header-logo-img { width: 85px; height: auto; object-fit: contain; }
+        .header-logo-img { width: 42px; height: 42px; object-fit: cover; border-radius: 6px; }
         .header-title-box { display: flex; flex-direction: column; border-left: 2px solid #ddd; padding-left: 10px; }
         .header-main-title { font-size: 15px; font-weight: 900; color: #000000; }
         .header-sub-title { font-size: 11px; font-weight: bold; color: #0076FF; }
@@ -92,10 +92,10 @@
 <body>
 
 <div class="phone-frame">
-    <!-- 1. Splash Screen -->
+    <!-- 1. Splash Screen (냉장고 이미지 적용) -->
     <div id="splash-screen" class="screen active">
         <div class="splash-desc">한번에 DDAK! 자재코드를 찾아내는!</div>
-        <img src="icon.jpg" alt="아이콘" class="splash-logo-img" onerror="handleImgError(this, 'icon')">
+        <img src="fridge_main.jpg" alt="냉장고" class="splash-main-img" onerror="safeImgError(this, 'fridge_main')">
         <div class="splash-title">DDak-Ring <span>(딱-링)</span></div>
         <div class="splash-maker">Made by 디지털남울산</div>
     </div>
@@ -111,15 +111,15 @@
             <div class="notice-list">
                 <div class="notice-card">
                     <div class="title">1. 드라이어 입구 Ø 420 과 400 주의</div>
-                    <img src="dryer.jpg" alt="드라이어" onerror="handleImgError(this, 'dryer')">
+                    <img src="dryer.jpg" alt="드라이어" onerror="safeImgError(this, 'dryer')">
                 </div>
                 <div class="notice-card">
                     <div class="title">2. 응축기 출구 Ø 420 과 400 주의</div>
-                    <img src="condenser.jpg" alt="응축기" onerror="handleImgError(this, 'condenser')">
+                    <img src="condenser.jpg" alt="응축기" onerror="safeImgError(this, 'condenser')">
                 </div>
                 <div class="notice-card">
                     <div class="title">3. 락링 앞뒤 주의</div>
-                    <img src="lockring.jpg" alt="락링" onerror="handleImgError(this, 'lockring')">
+                    <img src="lockring.jpg" alt="락링" onerror="safeImgError(this, 'lockring')">
                 </div>
             </div>
         </div>
@@ -133,7 +133,7 @@
     <div id="main-screen" class="screen">
         <div class="app-header">
             <div class="header-brand">
-                <img src="icon.jpg" alt="아이콘" class="header-logo-img" onerror="handleImgError(this, 'icon')">
+                <img src="lockring.jpg" alt="락링 아이콘" class="header-logo-img" onerror="safeImgError(this, 'lockring')">
                 <div class="header-title-box">
                     <div class="header-main-title">DDak-Ring</div>
                     <div class="header-sub-title">Lock-Ring Guide</div>
@@ -180,17 +180,14 @@
 </div>
 
 <script>
-    // 이미지 확장자 대소문자(.jpg, .JPG, .jpeg, .JPEG, .png) 자동 순차 시도 함수
-    function handleImgError(imgElement, baseName) {
-        const extensions = ['.JPG', '.jpeg', '.JPEG', '.png', '.PNG'];
-        let currentStep = parseInt(imgElement.getAttribute('data-error-step') || '0', 10);
-        
-        if (currentStep < extensions.length) {
-            imgElement.setAttribute('data-error-step', currentStep + 1);
-            imgElement.src = baseName + extensions[currentStep];
+    // GitHub 차단을 원천 방지하는 1회 안전 재시도 함수
+    function safeImgError(imgElement, baseName) {
+        if (!imgElement.getAttribute('data-retried')) {
+            imgElement.setAttribute('data-retried', 'true');
+            imgElement.src = baseName + '.JPG'; // 소문자 실패 시 대문자 1번만 시도
         } else {
             imgElement.onerror = null;
-            imgElement.style.display = 'none'; // 끝까지 파일이 없으면 숨김 처리
+            imgElement.style.background = '#e0e0e0'; // 파일 미등록 시 회색 처리
         }
     }
 
@@ -281,7 +278,7 @@
     let currentModelData = null;
     let activeTabName = 'machine';
 
-    // 1. 앱 실행 시 스플래시 화면 2초 후 주의사항 화면으로 전환
+    // 1. 앱 실행 시 스플래시 화면 2.5초 후 주의사항 화면으로 전환
     setTimeout(() => {
         document.getElementById('splash-screen').classList.remove('active');
         document.getElementById('notice-screen').classList.add('active');
@@ -301,9 +298,9 @@
                 confirmBtn.classList.add('active');
             }
         }, 1000);
-    }, 2000);
+    }, 2500);
 
-    // 2. 주의사항 확인 버튼 클릭 시 모델 검색 메인 화면으로 진입
+    // 2. 주의사항 확인 클릭 시 메인 검색 화면으로 전환
     function closeNotice() {
         document.getElementById('notice-screen').classList.remove('active');
         document.getElementById('main-screen').classList.add('active');
@@ -380,9 +377,8 @@
         document.getElementById('modalSize').innerText = "파이 규격: " + partSize;
         
         const imgEl = document.getElementById('modalImg');
-        imgEl.removeAttribute('data-error-step');
         imgEl.style.display = 'block';
-        imgEl.onerror = () => handleImgError(imgEl, partCode);
+        imgEl.onerror = () => safeImgError(imgEl, partCode);
         imgEl.src = `${partCode}.jpg`;
 
         document.getElementById('photoModal').style.display = 'flex';
