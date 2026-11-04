@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>딱-링 (Tak-Ring)</title>
-    <!-- PWA 앱 매니페스트 연결 -->
+    <title>Ddak-Ring (딱-링)</title>
     <link rel="manifest" href="./manifest.json">
     
     <style>
@@ -14,13 +13,15 @@
         .screen { flex: 1; display: none; flex-direction: column; height: 100%; overflow-y: auto; background: #f8f9fa; }
         .screen.active { display: flex; }
         
+        /* Splash Screen */
         #splash-screen { background: #ffffff; color: #333; justify-content: center; align-items: center; text-align: center; padding: 30px; }
         .splash-logo-img { width: 220px; height: auto; margin: 20px 0; object-fit: contain; }
         .splash-desc { font-size: 15px; font-weight: bold; color: #0076FF; margin-bottom: 5px; letter-spacing: -0.5px; }
         .splash-title { font-size: 32px; font-weight: 900; color: #000000; margin-top: 5px; letter-spacing: -1px; }
-        .splash-title span { color: #555555; font-size: 24px; }
+        .splash-title span { color: #555555; font-size: 22px; }
         .splash-maker { font-size: 13px; color: #888888; font-weight: bold; margin-top: 30px; }
 
+        /* Header */
         .app-header { background: #ffffff; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e1e4e8; position: sticky; top: 0; z-index: 10; }
         .header-brand { display: flex; align-items: center; gap: 10px; }
         .header-logo-img { width: 85px; height: auto; object-fit: contain; }
@@ -30,30 +31,40 @@
         .header-center { font-size: 11px; font-weight: bold; color: #555; background: #eef2f7; padding: 4px 8px; border-radius: 4px; }
         .power-btn { background: none; border: none; font-size: 20px; cursor: pointer; color: #ff3b30; }
 
+        /* Content Area */
         .content { padding: 20px; flex: 1; }
         .search-box { display: flex; gap: 8px; margin-bottom: 20px; }
         .search-box input { flex: 1; padding: 12px 16px; border: 2px solid #0076FF; border-radius: 8px; font-size: 16px; outline: none; background: white; font-weight: bold; color: #333; }
         .search-box button { background: #0076FF; color: white; border: none; padding: 0 20px; border-radius: 8px; font-weight: bold; font-size: 16px; cursor: pointer; }
 
+        /* Tabs */
         .tabs { display: flex; gap: 6px; margin-bottom: 15px; overflow-x: auto; padding-bottom: 5px; }
         .tab { padding: 8px 14px; background: #e9ecef; border: none; border-radius: 20px; font-size: 13px; font-weight: bold; color: #495057; cursor: pointer; white-space: nowrap; }
         .tab.active { background: #0076FF; color: white; }
 
+        /* Card List */
         .card-list { display: flex; flex-direction: column; gap: 10px; }
         .part-card { background: white; padding: 14px 16px; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center; cursor: pointer; border-left: 4px solid #0076FF; }
         .part-info .part-name { font-size: 14px; font-weight: bold; color: #333; margin-bottom: 4px; }
+        .part-info .part-details { display: flex; gap: 8px; align-items: center; }
         .part-info .part-code { font-size: 13px; color: #0076FF; font-family: monospace; font-weight: bold; }
+        .part-info .part-size { font-size: 12px; color: #e65100; font-weight: bold; background: #fff3e0; padding: 2px 6px; border-radius: 4px; }
+        
+        .card-right { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
         .material-badge { font-size: 11px; padding: 3px 8px; border-radius: 4px; background: #eef2f7; color: #333; font-weight: bold; }
         .material-badge.cu { background: #fff3cd; color: #856404; }
         .material-badge.al { background: #d1ecf1; color: #0c5460; }
 
+        /* Modal */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); justify-content: center; align-items: center; z-index: 100; }
         .modal-content { background: white; padding: 20px; border-radius: 12px; text-align: center; max-width: 90%; width: 340px; position: relative; }
         .modal-content img { width: 100%; height: 240px; object-fit: contain; border-radius: 8px; background: #f1f3f5; margin-bottom: 15px; }
         .modal-content h3 { font-size: 16px; margin-bottom: 5px; color: #333; }
-        .modal-content p { font-size: 13px; color: #666; margin-bottom: 15px; }
+        .modal-content p { font-size: 13px; color: #666; margin-bottom: 5px; }
+        .modal-content .modal-size { font-size: 14px; color: #e65100; font-weight: bold; margin-bottom: 15px; }
         .close-modal { background: #333; color: white; border: none; padding: 10px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; width: 100%; }
 
+        /* Exit Screen */
         #exit-screen { justify-content: center; align-items: center; text-align: center; padding: 30px; background: #ffffff; }
         .exit-icon { font-size: 48px; margin-bottom: 20px; }
         .exit-title { font-size: 20px; font-weight: bold; color: #333; margin-bottom: 15px; line-height: 1.4; }
@@ -64,19 +75,21 @@
 <body>
 
 <div class="phone-frame">
+    <!-- 1. Splash Screen -->
     <div id="splash-screen" class="screen active">
         <div class="splash-desc">한번에 딱! 자재코드를 찾아내는!</div>
         <img src="SAMSUNG.JPG" alt="SAMSUNG" class="splash-logo-img" onerror="this.src='SAMSUNG.jpg';">
-        <div class="splash-title">딱-링 <span>(Tak-Ring)</span></div>
+        <div class="splash-title">Ddak-Ring <span>(딱-링)</span></div>
         <div class="splash-maker">Made by 디지털남울산</div>
     </div>
 
+    <!-- 2. Main Screen -->
     <div id="main-screen" class="screen">
         <div class="app-header">
             <div class="header-brand">
                 <img src="SAMSUNG.JPG" alt="SAMSUNG" class="header-logo-img" onerror="this.src='SAMSUNG.jpg';">
                 <div class="header-title-box">
-                    <div class="header-main-title">딱-링 (Tak-Ring)</div>
+                    <div class="header-main-title">Ddak-Ring</div>
                     <div class="header-sub-title">Lock-Ring Guide</div>
                 </div>
             </div>
@@ -100,6 +113,7 @@
         </div>
     </div>
 
+    <!-- 3. Exit Screen -->
     <div id="exit-screen" class="screen">
         <div class="exit-icon">🛠️</div>
         <div class="exit-title">오늘도 딱(Tak)! 맞는 락(Lock)링으로<br>한번에 딱(Tak)! 수리하세요!</div>
@@ -108,11 +122,13 @@
     </div>
 </div>
 
+<!-- Modal -->
 <div id="photoModal" class="modal" onclick="closeModal()">
     <div class="modal-content" onclick="event.stopPropagation()">
         <img id="modalImg" src="" alt="락링 실물 사진">
         <h3 id="modalTitle">부품명</h3>
         <p id="modalCode">자재코드</p>
+        <p id="modalSize" class="modal-size">파이 정보</p>
         <button class="close-modal" onclick="closeModal()">확인</button>
     </div>
 </div>
@@ -120,30 +136,85 @@
 <script>
     const dbData = {
         machineRoom: [
-            { part: "콤프고압 (COMP → COND)", code: "DA81-10910A", material: "Cu + Steel" },
-            { part: "응축기 (COND → CLUSTER)", code: "DA81-10911A", material: "Steel + Steel" },
-            { part: "클러스터 (CLUSTER → HOT PIPE)", code: "DA81-10912A", material: "Steel + Steel" },
-            { part: "클러스터 (옵션)", code: "DA81-10913A", material: "Steel + Steel" },
-            { part: "드라이어 입구 (HOT PIPE → DRYER)", code: "DA81-10914A", material: "Cu + Steel" },
-            { part: "드라이어 입구 (옵션)", code: "DA81-10915A", material: "Cu + Steel" },
-            { part: "드라이어 출구 (DRYER → STEP V/V)", code: "DA81-10916A", material: "Cu + Steel" },
-            { part: "드라이어 출구 (옵션)", code: "DA81-10917A", material: "Cu + Steel" },
-            { part: "스텝밸브 출구 (STEP V/V → CAPILLARY)", code: "DA81-10918A", material: "Cu + Cu" },
-            { part: "스텝밸브 출구 (옵션)", code: "DA81-10919A", material: "Cu + Cu" },
-            { part: "콤프 저압/진공부", code: "DA81-10920A", material: "Cu + Cu" }
+            { part: "콤프고압 (COMP → COND)", code: "DA81-10910A", size: "Ø 6.35 × 6.35", material: "Cu + Steel" },
+            { part: "응축기 (COND → CLUSTER)", code: "DA81-10911A", size: "Ø 6.35 × 6.35", material: "Steel + Steel" },
+            { part: "클러스터 (CLUSTER → HOT PIPE)", code: "DA81-10912A", size: "Ø 6.35 × 6.35", material: "Steel + Steel" },
+            { part: "클러스터 (옵션)", code: "DA81-10913A", size: "Ø 6.35 × 4.76", material: "Steel + Steel" },
+            { part: "드라이어 입구 (HOT PIPE → DRYER)", code: "DA81-10914A", size: "Ø 6.35 × 6.35", material: "Cu + Steel" },
+            { part: "드라이어 입구 (옵션)", code: "DA81-10915A", size: "Ø 6.35 × 4.76", material: "Cu + Steel" },
+            { part: "드라이어 출구 (DRYER → STEP V/V)", code: "DA81-10916A", size: "Ø 6.35 × 6.35", material: "Cu + Steel" },
+            { part: "드라이어 출구 (옵션)", code: "DA81-10917A", size: "Ø 4.76 × 4.76", material: "Cu + Steel" },
+            { part: "스텝밸브 출구 (STEP V/V → CAPILLARY)", code: "DA81-10918A", size: "Ø 6.35 × 3.0", material: "Cu + Cu" },
+            { part: "스텝밸브 출구 (옵션)", code: "DA81-10919A", size: "Ø 4.76 × 3.0", material: "Cu + Cu" },
+            { part: "콤프 저압/진공부", code: "DA81-10920A", size: "Ø 8.0 × 8.0", material: "Cu + Cu" }
         ],
         models: [
-            { pattern: "RF85K", series: "4도어 (FDR)", year: "16년형", fridge: { evapIn: "DA81-10924A", evapOut: "DA81-10930A", noWeld: "DA81-11148A" }, freezer: { evapIn: "DA81-10928A", evapOut: "DA81-10931A", noWeld: "DA81-11153B" }, varRoom: { evapIn: "DA81-10924A", evapOut: "DA81-10931A", noWeld: "DA81-11151A" } },
-            { pattern: "RF10", series: "셰프 (RF9900)", year: "15~22년형", fridge: { evapIn: "DA81-10924A", evapOut: "DA81-10930A", noWeld: "DA81-11147B" }, freezer: { evapIn: "DA81-10928A", evapOut: "DA81-10931A", noWeld: "DA81-11153B" }, varRoom: { evapIn: "DA81-10924A", evapOut: "DA81-10931A", noWeld: "DA81-11150A" } },
-            { pattern: "RF64J", series: "4도어 (FDR)", year: "15년형", fridge: { evapIn: "DA81-10924A", evapOut: "DA81-10930A", noWeld: "DA81-11147A" }, freezer: { evapIn: "DA81-10928A", evapOut: "DA81-10931A", noWeld: "DA81-11153B" }, varRoom: { evapIn: "DA81-10924A", evapOut: "DA81-10931A", noWeld: "DA81-11151A" } },
-            { pattern: "RF85B", series: "4도어 (FDR)", year: "22년형", fridge: { evapIn: "DA81-10923A", evapOut: "DA81-10930A", noWeld: "DA81-11148A" }, freezer: { evapIn: "DA81-10928A", evapOut: "DA81-10931A", noWeld: "DA81-11153E" }, varRoom: { evapIn: "DA81-10924A", evapOut: "DA81-10931A", noWeld: "DA81-11151E" } },
-            { pattern: "RF66", series: "4도어 (FDR)", year: "17년형", fridge: { evapIn: "DA81-10924A", evapOut: "DA81-10930A", noWeld: "DA81-11152A" }, freezer: { evapIn: "DA81-10928A", evapOut: "DA81-10931A", noWeld: "DA81-11148A" }, varRoom: { evapIn: "DA81-10924A", evapOut: "DA81-10931A", noWeld: "DA81-11151L" } },
-            { pattern: "RF85M", series: "4도어 (FDR)", year: "17년형", fridge: { evapIn: "DA81-10924A", evapOut: "DA81-10930A", noWeld: "DA81-11148A" }, freezer: { evapIn: "DA81-10928A", evapOut: "DA81-10931A", noWeld: "DA81-11153B" }, varRoom: { evapIn: "DA81-10924A", evapOut: "DA81-10931A", noWeld: "DA81-11151A" } },
-            { pattern: "RF66N", series: "4도어 (FDR)", year: "18년형", fridge: { evapIn: "DA81-10923A", evapOut: "DA81-10930A", noWeld: "DA81-11152A" }, freezer: { evapIn: "DA81-10928A", evapOut: "DA81-10931A", noWeld: "DA81-11153E" }, varRoom: { evapIn: "DA81-10924A", evapOut: "DA81-10931A", noWeld: "DA81-11151L" } },
-            { pattern: "RF73N", series: "4도어 (FDR)", year: "18년형", fridge: { evapIn: "DA81-10923A", evapOut: "DA81-10930A", noWeld: "DA81-11148A" }, freezer: { evapIn: "DA81-10928A", evapOut: "DA81-10931A", noWeld: "DA81-11153B" }, varRoom: { evapIn: "DA81-10924A", evapOut: "DA81-10931A", noWeld: "DA81-11150B" } },
-            { pattern: "RF85N", series: "4도어 (FDR)", year: "18년형", fridge: { evapIn: "DA81-10923A", evapOut: "DA81-10930A", noWeld: "DA81-11148A" }, freezer: { evapIn: "DA81-10928A", evapOut: "DA81-10931A", noWeld: "DA81-11153B" }, varRoom: { evapIn: "DA81-10924A", evapOut: "DA81-10931A", noWeld: "DA81-11151A" } },
-            { pattern: "RF60A", series: "4도어 (FDR)", year: "21년형", fridge: { evapIn: "DA81-10923A", evapOut: "DA81-10930A", noWeld: "DA81-11149A" }, freezer: { evapIn: "DA81-10928A", evapOut: "DA81-10931A", noWeld: "DA81-11153E" }, varRoom: { evapIn: "DA81-10924A", evapOut: "DA81-10931A", noWeld: "DA81-11151C" } },
-            { pattern: "RF85A", series: "4도어 (FDR)", year: "21년형", fridge: { evapIn: "DA81-10923A", evapOut: "DA81-10930A", noWeld: "DA81-11148A" }, freezer: { evapIn: "DA81-10928A", evapOut: "DA81-10931A", noWeld: "DA81-11153B" }, varRoom: { evapIn: "DA81-10924A", evapOut: "DA81-10931A", noWeld: "DA81-11151A" } }
+            { 
+                pattern: "RF85K", series: "4도어 (FDR)", year: "16년형", 
+                fridge: { evapIn: "DA81-10924A", evapInSize: "Ø 6.35 × 6.35", evapOut: "DA81-10930A", evapOutSize: "Ø 8.0 × 6.35", noWeld: "DA81-11148A", noWeldSize: "Ø 6.35 (AL)" }, 
+                freezer: { evapIn: "DA81-10928A", evapInSize: "Ø 6.35 × 4.76", evapOut: "DA81-10931A", evapOutSize: "Ø 8.0 × 8.0", noWeld: "DA81-11153B", noWeldSize: "Ø 8.0 (AL)" }, 
+                varRoom: { evapIn: "DA81-10924A", evapInSize: "Ø 6.35 × 6.35", evapOut: "DA81-10931A", evapOutSize: "Ø 8.0 × 8.0", noWeld: "DA81-11151A", noWeldSize: "Ø 6.35 (AL)" } 
+            },
+            { 
+                pattern: "RF10", series: "셰프 (RF9900)", year: "15~22년형", 
+                fridge: { evapIn: "DA81-10924A", evapInSize: "Ø 6.35 × 6.35", evapOut: "DA81-10930A", evapOutSize: "Ø 8.0 × 6.35", noWeld: "DA81-11147B", noWeldSize: "Ø 6.35 (AL)" }, 
+                freezer: { evapIn: "DA81-10928A", evapInSize: "Ø 6.35 × 4.76", evapOut: "DA81-10931A", evapOutSize: "Ø 8.0 × 8.0", noWeld: "DA81-11153B", noWeldSize: "Ø 8.0 (AL)" }, 
+                varRoom: { evapIn: "DA81-10924A", evapInSize: "Ø 6.35 × 6.35", evapOut: "DA81-10931A", evapOutSize: "Ø 8.0 × 8.0", noWeld: "DA81-11150A", noWeldSize: "Ø 6.35 (AL)" } 
+            },
+            { 
+                pattern: "RF64J", series: "4도어 (FDR)", year: "15년형", 
+                fridge: { evapIn: "DA81-10924A", evapInSize: "Ø 6.35 × 6.35", evapOut: "DA81-10930A", evapOutSize: "Ø 8.0 × 6.35", noWeld: "DA81-11147A", noWeldSize: "Ø 6.35 (AL)" }, 
+                freezer: { evapIn: "DA81-10928A", evapInSize: "Ø 6.35 × 4.76", evapOut: "DA81-10931A", evapOutSize: "Ø 8.0 × 8.0", noWeld: "DA81-11153B", noWeldSize: "Ø 8.0 (AL)" }, 
+                varRoom: { evapIn: "DA81-10924A", evapInSize: "Ø 6.35 × 6.35", evapOut: "DA81-10931A", evapOutSize: "Ø 8.0 × 8.0", noWeld: "DA81-11151A", noWeldSize: "Ø 6.35 (AL)" } 
+            },
+            { 
+                pattern: "RF85B", series: "4도어 (FDR)", year: "22년형", 
+                fridge: { evapIn: "DA81-10923A", evapInSize: "Ø 6.35 × 6.35", evapOut: "DA81-10930A", evapOutSize: "Ø 8.0 × 6.35", noWeld: "DA81-11148A", noWeldSize: "Ø 6.35 (AL)" }, 
+                freezer: { evapIn: "DA81-10928A", evapInSize: "Ø 6.35 × 4.76", evapOut: "DA81-10931A", evapOutSize: "Ø 8.0 × 8.0", noWeld: "DA81-11153E", noWeldSize: "Ø 8.0 (AL)" }, 
+                varRoom: { evapIn: "DA81-10924A", evapInSize: "Ø 6.35 × 6.35", evapOut: "DA81-10931A", evapOutSize: "Ø 8.0 × 8.0", noWeld: "DA81-11151E", noWeldSize: "Ø 6.35 (AL)" } 
+            },
+            { 
+                pattern: "RF66", series: "4도어 (FDR)", year: "17년형", 
+                fridge: { evapIn: "DA81-10924A", evapInSize: "Ø 6.35 × 6.35", evapOut: "DA81-10930A", evapOutSize: "Ø 8.0 × 6.35", noWeld: "DA81-11152A", noWeldSize: "Ø 6.35 (AL)" }, 
+                freezer: { evapIn: "DA81-10928A", evapInSize: "Ø 6.35 × 4.76", evapOut: "DA81-10931A", evapOutSize: "Ø 8.0 × 8.0", noWeld: "DA81-11148A", noWeldSize: "Ø 6.35 (AL)" }, 
+                varRoom: { evapIn: "DA81-10924A", evapInSize: "Ø 6.35 × 6.35", evapOut: "DA81-10931A", evapOutSize: "Ø 8.0 × 8.0", noWeld: "DA81-11151L", noWeldSize: "Ø 6.35 (AL)" } 
+            },
+            { 
+                pattern: "RF85M", series: "4도어 (FDR)", year: "17년형", 
+                fridge: { evapIn: "DA81-10924A", evapInSize: "Ø 6.35 × 6.35", evapOut: "DA81-10930A", evapOutSize: "Ø 8.0 × 6.35", noWeld: "DA81-11148A", noWeldSize: "Ø 6.35 (AL)" }, 
+                freezer: { evapIn: "DA81-10928A", evapInSize: "Ø 6.35 × 4.76", evapOut: "DA81-10931A", evapOutSize: "Ø 8.0 × 8.0", noWeld: "DA81-11153B", noWeldSize: "Ø 8.0 (AL)" }, 
+                varRoom: { evapIn: "DA81-10924A", evapInSize: "Ø 6.35 × 6.35", evapOut: "DA81-10931A", evapOutSize: "Ø 8.0 × 8.0", noWeld: "DA81-11151A", noWeldSize: "Ø 6.35 (AL)" } 
+            },
+            { 
+                pattern: "RF66N", series: "4도어 (FDR)", year: "18년형", 
+                fridge: { evapIn: "DA81-10923A", evapInSize: "Ø 6.35 × 6.35", evapOut: "DA81-10930A", evapOutSize: "Ø 8.0 × 6.35", noWeld: "DA81-11152A", noWeldSize: "Ø 6.35 (AL)" }, 
+                freezer: { evapIn: "DA81-10928A", evapInSize: "Ø 6.35 × 4.76", evapOut: "DA81-10931A", evapOutSize: "Ø 8.0 × 8.0", noWeld: "DA81-11153E", noWeldSize: "Ø 8.0 (AL)" }, 
+                varRoom: { evapIn: "DA81-10924A", evapInSize: "Ø 6.35 × 6.35", evapOut: "DA81-10931A", evapOutSize: "Ø 8.0 × 8.0", noWeld: "DA81-11151L", noWeldSize: "Ø 6.35 (AL)" } 
+            },
+            { 
+                pattern: "RF73N", series: "4도어 (FDR)", year: "18년형", 
+                fridge: { evapIn: "DA81-10923A", evapInSize: "Ø 6.35 × 6.35", evapOut: "DA81-10930A", evapOutSize: "Ø 8.0 × 6.35", noWeld: "DA81-11148A", noWeldSize: "Ø 6.35 (AL)" }, 
+                freezer: { evapIn: "DA81-10928A", evapInSize: "Ø 6.35 × 4.76", evapOut: "DA81-10931A", evapOutSize: "Ø 8.0 × 8.0", noWeld: "DA81-11153B", noWeldSize: "Ø 8.0 (AL)" }, 
+                varRoom: { evapIn: "DA81-10924A", evapInSize: "Ø 6.35 × 6.35", evapOut: "DA81-10931A", evapOutSize: "Ø 8.0 × 8.0", noWeld: "DA81-11150B", noWeldSize: "Ø 6.35 (AL)" } 
+            },
+            { 
+                pattern: "RF85N", series: "4도어 (FDR)", year: "18년형", 
+                fridge: { evapIn: "DA81-10923A", evapInSize: "Ø 6.35 × 6.35", evapOut: "DA81-10930A", evapOutSize: "Ø 8.0 × 6.35", noWeld: "DA81-11148A", noWeldSize: "Ø 6.35 (AL)" }, 
+                freezer: { evapIn: "DA81-10928A", evapInSize: "Ø 6.35 × 4.76", evapOut: "DA81-10931A", evapOutSize: "Ø 8.0 × 8.0", noWeld: "DA81-11153B", noWeldSize: "Ø 8.0 (AL)" }, 
+                varRoom: { evapIn: "DA81-10924A", evapInSize: "Ø 6.35 × 6.35", evapOut: "DA81-10931A", evapOutSize: "Ø 8.0 × 8.0", noWeld: "DA81-11151A", noWeldSize: "Ø 6.35 (AL)" } 
+            },
+            { 
+                pattern: "RF60A", series: "4도어 (FDR)", year: "21년형", 
+                fridge: { evapIn: "DA81-10923A", evapInSize: "Ø 6.35 × 6.35", evapOut: "DA81-10930A", evapOutSize: "Ø 8.0 × 6.35", noWeld: "DA81-11149A", noWeldSize: "Ø 6.35 (AL)" }, 
+                freezer: { evapIn: "DA81-10928A", evapInSize: "Ø 6.35 × 4.76", evapOut: "DA81-10931A", evapOutSize: "Ø 8.0 × 8.0", noWeld: "DA81-11153E", noWeldSize: "Ø 8.0 (AL)" }, 
+                varRoom: { evapIn: "DA81-10924A", evapInSize: "Ø 6.35 × 6.35", evapOut: "DA81-10931A", evapOutSize: "Ø 8.0 × 8.0", noWeld: "DA81-11151C", noWeldSize: "Ø 6.35 (AL)" } 
+            },
+            { 
+                pattern: "RF85A", series: "4도어 (FDR)", year: "21년형", 
+                fridge: { evapIn: "DA81-10923A", evapInSize: "Ø 6.35 × 6.35", evapOut: "DA81-10930A", evapOutSize: "Ø 8.0 × 6.35", noWeld: "DA81-11148A", noWeldSize: "Ø 6.35 (AL)" }, 
+                freezer: { evapIn: "DA81-10928A", evapInSize: "Ø 6.35 × 4.76", evapOut: "DA81-10931A", evapOutSize: "Ø 8.0 × 8.0", noWeld: "DA81-11153B", noWeldSize: "Ø 8.0 (AL)" }, 
+                varRoom: { evapIn: "DA81-10924A", evapInSize: "Ø 6.35 × 6.35", evapOut: "DA81-10931A", evapOutSize: "Ø 8.0 × 8.0", noWeld: "DA81-11151A", noWeldSize: "Ø 6.35 (AL)" } 
+            }
         ]
     };
 
@@ -194,30 +265,36 @@
         } else if (currentModelData && currentModelData[category]) {
             const cat = currentModelData[category];
             items = [
-                { part: "에바 입구 (Evap In)", code: cat.evapIn, material: "Cu" },
-                { part: "에바 출구 (Evap Out)", code: cat.evapOut, material: "Cu" },
-                { part: "무용접 에바", code: cat.noWeld, material: "AL" }
+                { part: "에바 입구 (Evap In)", code: cat.evapIn, size: cat.evapInSize, material: "Cu" },
+                { part: "에바 출구 (Evap Out)", code: cat.evapOut, size: cat.evapOutSize, material: "Cu" },
+                { part: "무용접 에바", code: cat.noWeld, size: cat.noWeldSize, material: "AL" }
             ];
         }
 
         items.forEach(item => {
             const card = document.createElement('div');
             card.className = 'part-card';
-            card.onclick = () => openModal(item.part, item.code);
+            card.onclick = () => openModal(item.part, item.code, item.size);
             card.innerHTML = `
                 <div class="part-info">
                     <div class="part-name">${item.part}</div>
-                    <div class="part-code">${item.code}</div>
+                    <div class="part-details">
+                        <div class="part-code">${item.code}</div>
+                        <div class="part-size">${item.size}</div>
+                    </div>
                 </div>
-                <div class="material-badge ${item.material.toLowerCase().includes('al') ? 'al' : 'cu'}">${item.material}</div>
+                <div class="card-right">
+                    <div class="material-badge ${item.material.toLowerCase().includes('al') ? 'al' : 'cu'}">${item.material}</div>
+                </div>
             `;
             listEl.appendChild(card);
         });
     }
 
-    function openModal(partName, partCode) {
+    function openModal(partName, partCode, partSize) {
         document.getElementById('modalTitle').innerText = partName;
-        document.getElementById('modalCode').innerText = partCode;
+        document.getElementById('modalCode').innerText = "자재코드: " + partCode;
+        document.getElementById('modalSize').innerText = "파이 규격: " + partSize;
         
         const imgEl = document.getElementById('modalImg');
         imgEl.src = `${partCode}.JPG`;
