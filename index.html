@@ -13,7 +13,7 @@
         .screen { flex: 1; display: none; flex-direction: column; height: 100%; overflow-y: auto; background: #ffffff; }
         .screen.active { display: flex; }
         
-        /* Splash Screen (냉장고 이미지 메인 배치) */
+        /* Splash Screen */
         #splash-screen { background: #ffffff; color: #333; justify-content: center; align-items: center; text-align: center; padding: 30px; }
         .splash-desc { font-size: 16px; font-weight: bold; color: #0076FF; margin-bottom: 12px; letter-spacing: -0.5px; }
         .splash-main-img { width: 170px; height: 260px; object-fit: contain; margin: 10px 0; }
@@ -92,10 +92,10 @@
 <body>
 
 <div class="phone-frame">
-    <!-- 1. Splash Screen (냉장고 이미지 적용) -->
+    <!-- 1. Splash Screen -->
     <div id="splash-screen" class="screen active">
         <div class="splash-desc">한번에 DDAK! 자재코드를 찾아내는!</div>
-        <img src="fridge_main.jpg" alt="냉장고" class="splash-main-img" onerror="safeImgError(this, 'fridge_main')">
+        <img src="fridge_main.png" alt="냉장고" class="splash-main-img">
         <div class="splash-title">DDak-Ring <span>(딱-링)</span></div>
         <div class="splash-maker">Made by 디지털남울산</div>
     </div>
@@ -111,15 +111,15 @@
             <div class="notice-list">
                 <div class="notice-card">
                     <div class="title">1. 드라이어 입구 Ø 420 과 400 주의</div>
-                    <img src="dryer.jpg" alt="드라이어" onerror="safeImgError(this, 'dryer')">
+                    <img src="dryer.jpeg" alt="드라이어">
                 </div>
                 <div class="notice-card">
                     <div class="title">2. 응축기 출구 Ø 420 과 400 주의</div>
-                    <img src="condenser.jpg" alt="응축기" onerror="safeImgError(this, 'condenser')">
+                    <img src="condenser.jpeg" alt="응축기">
                 </div>
                 <div class="notice-card">
                     <div class="title">3. 락링 앞뒤 주의</div>
-                    <img src="lockring.jpg" alt="락링" onerror="safeImgError(this, 'lockring')">
+                    <img src="lockring.jpg" alt="락링">
                 </div>
             </div>
         </div>
@@ -133,7 +133,7 @@
     <div id="main-screen" class="screen">
         <div class="app-header">
             <div class="header-brand">
-                <img src="lockring.jpg" alt="락링 아이콘" class="header-logo-img" onerror="safeImgError(this, 'lockring')">
+                <img src="lockring.jpg" alt="락링 아이콘" class="header-logo-img">
                 <div class="header-title-box">
                     <div class="header-main-title">DDak-Ring</div>
                     <div class="header-sub-title">Lock-Ring Guide</div>
@@ -180,17 +180,6 @@
 </div>
 
 <script>
-    // GitHub 차단을 원천 방지하는 1회 안전 재시도 함수
-    function safeImgError(imgElement, baseName) {
-        if (!imgElement.getAttribute('data-retried')) {
-            imgElement.setAttribute('data-retried', 'true');
-            imgElement.src = baseName + '.JPG'; // 소문자 실패 시 대문자 1번만 시도
-        } else {
-            imgElement.onerror = null;
-            imgElement.style.background = '#e0e0e0'; // 파일 미등록 시 회색 처리
-        }
-    }
-
     const dbData = {
         machineRoom: [
             { part: "콤프고압 (COMP → COND)", code: "DA81-10910A", size: "Ø 6.35 × 6.35", material: "Cu + Steel" },
@@ -378,7 +367,10 @@
         
         const imgEl = document.getElementById('modalImg');
         imgEl.style.display = 'block';
-        imgEl.onerror = () => safeImgError(imgEl, partCode);
+        imgEl.onerror = function() {
+            this.onerror = null;
+            this.src = `${partCode}.JPG`;
+        };
         imgEl.src = `${partCode}.jpg`;
 
         document.getElementById('photoModal').style.display = 'flex';
