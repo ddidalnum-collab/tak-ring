@@ -346,13 +346,9 @@
         history.pushState({ page: 'main' }, '');
     }
 
-    // 종료 버튼: 브라우저/앱 종료 시도
+ // 종료 버튼: 뒤로 빠져나가기
     function confirmExit() {
-        window.close();
-        // 스마트폰 웹뷰에서 window.close()가 막힌 경우 홈 또는 빈페이지 이동
-        setTimeout(() => {
-            history.back();
-        }, 100);
+        history.back();
     }
 
     function searchModel() {
