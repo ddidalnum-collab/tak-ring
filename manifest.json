@@ -1,19 +1,19 @@
 {
-  "name": "딱-링 (Tak-Ring)",
-  "short_name": "딱-링",
+  "name": "Ddak-Ring (딱-링)",
+  "short_name": "Ddak-Ring",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#0076FF",
   "icons": [
     {
-      "src": "SAMSUNG.JPG",
+      "src": "icon.jpg",
       "sizes": "512x512",
       "type": "image/jpeg",
       "purpose": "any maskable"
     },
     {
-      "src": "SAMSUNG.JPG",
+      "src": "icon.jpg",
       "sizes": "192x192",
       "type": "image/jpeg",
       "purpose": "any maskable"
