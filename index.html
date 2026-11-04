@@ -21,7 +21,7 @@
         .splash-title span { color: #555555; font-size: 22px; }
         .splash-maker { font-size: 13px; color: #888888; font-weight: bold; margin-top: 30px; }
 
-        /* Warning Notice Screen (시인성 극대화 세로형 카드) */
+        /* Warning Notice Screen */
         .notice-top-bar { background: #0076FF; color: white; padding: 14px 20px; font-size: 18px; font-weight: 900; }
         .notice-content-area { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; }
         .notice-header { text-align: center; margin-bottom: 12px; }
@@ -95,12 +95,12 @@
     <!-- 1. Splash Screen -->
     <div id="splash-screen" class="screen active">
         <div class="splash-desc">한번에 DDAK! 자재코드를 찾아내는!</div>
-        <img src="icon.jpg" alt="아이콘" class="splash-logo-img" onerror="this.src='icon.jpg';">
+        <img src="icon.jpg" alt="아이콘" class="splash-logo-img" onerror="handleImgError(this, 'icon')">
         <div class="splash-title">DDak-Ring <span>(딱-링)</span></div>
         <div class="splash-maker">Made by 디지털남울산</div>
     </div>
 
-    <!-- 2. Notice Warning Screen (예시 사진 레이아웃 반영) -->
+    <!-- 2. Notice Warning Screen -->
     <div id="notice-screen" class="screen">
         <div class="notice-top-bar">DDak-Ring (딱-링)</div>
         <div class="notice-content-area">
@@ -111,15 +111,15 @@
             <div class="notice-list">
                 <div class="notice-card">
                     <div class="title">1. 드라이어 입구 Ø 420 과 400 주의</div>
-                    <img src="dryer.jpg" alt="드라이어" onerror="this.src='dryer.jpg';">
+                    <img src="dryer.jpg" alt="드라이어" onerror="handleImgError(this, 'dryer')">
                 </div>
                 <div class="notice-card">
                     <div class="title">2. 응축기 출구 Ø 420 과 400 주의</div>
-                    <img src="condenser.jpg" alt="응축기" onerror="this.src='condenser.jpg';">
+                    <img src="condenser.jpg" alt="응축기" onerror="handleImgError(this, 'condenser')">
                 </div>
                 <div class="notice-card">
                     <div class="title">3. 락링 앞뒤 주의</div>
-                    <img src="lockring.jpg" alt="락링" onerror="this.src='lockring.jpg';">
+                    <img src="lockring.jpg" alt="락링" onerror="handleImgError(this, 'lockring')">
                 </div>
             </div>
         </div>
@@ -133,7 +133,7 @@
     <div id="main-screen" class="screen">
         <div class="app-header">
             <div class="header-brand">
-                <img src="icon.jpg" alt="아이콘" class="header-logo-img" onerror="this.src='icon.jpg';">
+                <img src="icon.jpg" alt="아이콘" class="header-logo-img" onerror="handleImgError(this, 'icon')">
                 <div class="header-title-box">
                     <div class="header-main-title">DDak-Ring</div>
                     <div class="header-sub-title">Lock-Ring Guide</div>
@@ -180,6 +180,20 @@
 </div>
 
 <script>
+    // 이미지 확장자 대소문자(.jpg, .JPG, .jpeg, .JPEG, .png) 자동 순차 시도 함수
+    function handleImgError(imgElement, baseName) {
+        const extensions = ['.JPG', '.jpeg', '.JPEG', '.png', '.PNG'];
+        let currentStep = parseInt(imgElement.getAttribute('data-error-step') || '0', 10);
+        
+        if (currentStep < extensions.length) {
+            imgElement.setAttribute('data-error-step', currentStep + 1);
+            imgElement.src = baseName + extensions[currentStep];
+        } else {
+            imgElement.onerror = null;
+            imgElement.style.display = 'none'; // 끝까지 파일이 없으면 숨김 처리
+        }
+    }
+
     const dbData = {
         machineRoom: [
             { part: "콤프고압 (COMP → COND)", code: "DA81-10910A", size: "Ø 6.35 × 6.35", material: "Cu + Steel" },
@@ -272,7 +286,6 @@
         document.getElementById('splash-screen').classList.remove('active');
         document.getElementById('notice-screen').classList.add('active');
         
-        // 3초 카운트다운 딜레이 시작
         let timeLeft = 3;
         const confirmBtn = document.getElementById('confirmBtn');
         const delayNoticeText = document.getElementById('delayNoticeText');
@@ -367,14 +380,10 @@
         document.getElementById('modalSize').innerText = "파이 규격: " + partSize;
         
         const imgEl = document.getElementById('modalImg');
-        imgEl.src = `${partCode}.JPG`;
-        imgEl.onerror = function() {
-            this.onerror = function() {
-                this.src = "";
-                this.alt = "등록된 실물 사진이 없습니다.";
-            };
-            this.src = `${partCode}.jpg`;
-        };
+        imgEl.removeAttribute('data-error-step');
+        imgEl.style.display = 'block';
+        imgEl.onerror = () => handleImgError(imgEl, partCode);
+        imgEl.src = `${partCode}.jpg`;
 
         document.getElementById('photoModal').style.display = 'flex';
     }
