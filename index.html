@@ -83,7 +83,7 @@
         .modal-content .modal-size { font-size: 14px; color: #e65100; font-weight: bold; margin-bottom: 15px; }
         .close-modal { background: #333; color: white; border: none; padding: 10px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; width: 100%; }
 
-        /* Exit Screen (오늘도 DDAK 화면 & 종료/취소 버튼) */
+        /* Exit Screen (오늘도 DDAK 화면) */
         #exit-screen { justify-content: center; align-items: center; text-align: center; padding: 30px; background: #ffffff; }
         .exit-icon { font-size: 48px; margin-bottom: 20px; }
         .exit-title { font-size: 20px; font-weight: 900; color: #222; margin-bottom: 15px; line-height: 1.4; }
@@ -163,7 +163,7 @@
         </div>
     </div>
 
-    <!-- 4. Exit Screen (오늘도 DDAK! & 종료 / 취소 버튼) -->
+    <!-- 4. Exit Screen -->
     <div id="exit-screen" class="screen">
         <div class="exit-icon">🛠️</div>
         <div class="exit-title">오늘도 DDAK! 맞는 락(Lock)링으로<br>한번에 DDAK! 수리하세요!</div>
@@ -302,34 +302,34 @@
         }, 1000);
     }, 2500);
 
-    // 2. 주의사항 확인 클릭 시 메인 검색 화면으로 전환 및 뒤로가기 가로채기 등록
+    // 2. 주의사항 확인 클릭 시 메인 검색 화면으로 전환
     function closeNotice() {
         document.getElementById('notice-screen').classList.remove('active');
         document.getElementById('main-screen').classList.add('active');
         
-        // 메인 화면 진입 시 뒤로가기 제어를 위해 가상 히스토리 등록
+        // 검색 화면에서 뒤로가기 제어를 위한 기준점 등록
         history.pushState({ page: 'main' }, '');
     }
 
-    // 3. 스마트폰 뒤로가기 버튼(제스처) 감지 이벤트
+    // 3. 스마트폰 뒤로가기 감지
     window.addEventListener('popstate', function(event) {
         const exitScreen = document.getElementById('exit-screen');
         const modal = document.getElementById('photoModal');
 
-        // 모달창이 열려있다면 모달만 닫기
+        // 모달창이 열려 있으면 모달창만 닫기
         if (modal.style.display === 'flex') {
             closeModal();
             history.pushState({ page: 'main' }, '');
             return;
         }
 
-        // 이미 종료 화면이 열려있다면 다시 메인으로
+        // 이미 종료 화면이 열려있는 상태에서 뒤로가기를 누르면 메인으로 복귀
         if (exitScreen.classList.contains('active')) {
             cancelExit();
             return;
         }
 
-        // 메인 화면에서 뒤로가기를 눌렀을 때 시스템 팝업 대신 '오늘도 DDAK' 종료 화면 띄우기
+        // 검색 화면에서 뒤로가기를 눌렀을 때만 '오늘도 DDAK' 화면 띄우기
         openExitScreen();
     });
 
@@ -339,16 +339,18 @@
         document.getElementById('exit-screen').classList.add('active');
     }
 
-    // 취소 버튼: 다시 메인 검색 화면으로 복귀
+    // [취소] 버튼: 다시 검색 화면으로 복귀
     function cancelExit() {
         document.getElementById('exit-screen').classList.remove('active');
         document.getElementById('main-screen').classList.add('active');
         history.pushState({ page: 'main' }, '');
     }
 
- // 종료 버튼: 뒤로 빠져나가기
+    // [종료] 버튼: 깔끔하게 빈 화면으로 전환 후 창 닫기
     function confirmExit() {
-        history.back();
+        document.body.innerHTML = '';
+        document.body.style.backgroundColor = '#000000';
+        window.close();
     }
 
     function searchModel() {
