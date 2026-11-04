@@ -10,7 +10,7 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif; }
         body { background-color: #f5f6f8; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; }
         .phone-frame { width: 100%; max-width: 480px; height: 100vh; background: #ffffff; display: flex; flex-direction: column; position: relative; box-shadow: 0 0 20px rgba(0,0,0,0.1); }
-        .screen { flex: 1; display: none; flex-direction: column; height: 100%; overflow-y: auto; background: #f8f9fa; }
+        .screen { flex: 1; display: none; flex-direction: column; height: 100%; overflow-y: auto; background: #ffffff; }
         .screen.active { display: flex; }
         
         /* Splash Screen */
@@ -20,6 +20,23 @@
         .splash-title { font-size: 32px; font-weight: 900; color: #000000; margin-top: 5px; letter-spacing: -1px; }
         .splash-title span { color: #555555; font-size: 22px; }
         .splash-maker { font-size: 13px; color: #888888; font-weight: bold; margin-top: 30px; }
+
+        /* Warning Notice Screen (시인성 극대화 세로형 카드) */
+        .notice-top-bar { background: #0076FF; color: white; padding: 14px 20px; font-size: 18px; font-weight: 900; }
+        .notice-content-area { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; }
+        .notice-header { text-align: center; margin-bottom: 12px; }
+        .notice-header h2 { font-size: 19px; font-weight: 900; color: #c62828; margin-bottom: 4px; display: flex; align-items: center; justify-content: center; gap: 6px; }
+        .notice-header p { font-size: 13px; color: #555; font-weight: bold; }
+        
+        .notice-list { display: flex; flex-direction: column; gap: 12px; }
+        .notice-card { background: #ffffff; border: 1.5px solid #ef9a9a; border-radius: 12px; padding: 10px; display: flex; flex-direction: column; gap: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.04); }
+        .notice-card .title { font-size: 15px; font-weight: 900; color: #b71c1c; letter-spacing: -0.5px; }
+        .notice-card img { width: 100%; height: 120px; object-fit: cover; border-radius: 8px; border: 1px solid #ddd; background: #eee; }
+
+        .notice-footer { padding: 12px 15px; background: #f8f9fa; border-top: 1px solid #eee; text-align: center; }
+        .delay-text { font-size: 12px; color: #777; margin-bottom: 6px; font-weight: bold; }
+        .confirm-btn { width: 100%; background: #bdbdbd; color: white; border: none; padding: 14px; border-radius: 8px; font-weight: bold; font-size: 16px; cursor: not-allowed; transition: background 0.3s; }
+        .confirm-btn.active { background: #0076FF; cursor: pointer; }
 
         /* Header */
         .app-header { background: #ffffff; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e1e4e8; position: sticky; top: 0; z-index: 10; }
@@ -32,7 +49,7 @@
         .power-btn { background: none; border: none; font-size: 20px; cursor: pointer; color: #ff3b30; }
 
         /* Content Area */
-        .content { padding: 20px; flex: 1; }
+        .content { padding: 20px; flex: 1; background: #f8f9fa; }
         .search-box { display: flex; gap: 8px; margin-bottom: 20px; }
         .search-box input { flex: 1; padding: 12px 16px; border: 2px solid #0076FF; border-radius: 8px; font-size: 16px; outline: none; background: white; font-weight: bold; color: #333; }
         .search-box button { background: #0076FF; color: white; border: none; padding: 0 20px; border-radius: 8px; font-weight: bold; font-size: 16px; cursor: pointer; }
@@ -77,17 +94,46 @@
 <div class="phone-frame">
     <!-- 1. Splash Screen -->
     <div id="splash-screen" class="screen active">
-        <div class="splash-desc">한번에 딱(DDAK)! 자재코드를 찾아내는!</div>
-        <img src="SAMSUNG.JPG" alt="SAMSUNG" class="splash-logo-img" onerror="this.src='SAMSUNG.jpg';">
+        <div class="splash-desc">한번에 DDAK! 자재코드를 찾아내는!</div>
+        <img src="icon.jpg" alt="아이콘" class="splash-logo-img" onerror="this.src='icon.jpg';">
         <div class="splash-title">DDak-Ring <span>(딱-링)</span></div>
         <div class="splash-maker">Made by 디지털남울산</div>
     </div>
 
-    <!-- 2. Main Screen -->
+    <!-- 2. Notice Warning Screen (예시 사진 레이아웃 반영) -->
+    <div id="notice-screen" class="screen">
+        <div class="notice-top-bar">DDak-Ring (딱-링)</div>
+        <div class="notice-content-area">
+            <div class="notice-header">
+                <h2>🚨 락링 수리 핵심 주의사항</h2>
+                <p>현장 작업 시 오출고 및 오작업 주의 항목</p>
+            </div>
+            <div class="notice-list">
+                <div class="notice-card">
+                    <div class="title">1. 드라이어 입구 Ø 420 과 400 주의</div>
+                    <img src="dryer.jpg" alt="드라이어" onerror="this.src='dryer.jpg';">
+                </div>
+                <div class="notice-card">
+                    <div class="title">2. 응축기 출구 Ø 420 과 400 주의</div>
+                    <img src="condenser.jpg" alt="응축기" onerror="this.src='condenser.jpg';">
+                </div>
+                <div class="notice-card">
+                    <div class="title">3. 락링 앞뒤 주의</div>
+                    <img src="lockring.jpg" alt="락링" onerror="this.src='lockring.jpg';">
+                </div>
+            </div>
+        </div>
+        <div class="notice-footer">
+            <div id="delayNoticeText" class="delay-text">3초 후 확인 가능 (3)</div>
+            <button id="confirmBtn" class="confirm-btn" disabled onclick="closeNotice()">확인 (다음으로)</button>
+        </div>
+    </div>
+
+    <!-- 3. Main Screen -->
     <div id="main-screen" class="screen">
         <div class="app-header">
             <div class="header-brand">
-                <img src="SAMSUNG.JPG" alt="SAMSUNG" class="header-logo-img" onerror="this.src='SAMSUNG.jpg';">
+                <img src="icon.jpg" alt="아이콘" class="header-logo-img" onerror="this.src='icon.jpg';">
                 <div class="header-title-box">
                     <div class="header-main-title">DDak-Ring</div>
                     <div class="header-sub-title">Lock-Ring Guide</div>
@@ -113,10 +159,10 @@
         </div>
     </div>
 
-    <!-- 3. Exit Screen -->
+    <!-- 4. Exit Screen -->
     <div id="exit-screen" class="screen">
         <div class="exit-icon">🛠️</div>
-        <div class="exit-title">오늘도 딱(DDAK)! 맞는 락(Lock)링으로<br>한번에 딱(DDAK)! 수리하세요!</div>
+        <div class="exit-title">오늘도 DDAK! 맞는 락(Lock)링으로<br>한번에 DDAK! 수리하세요!</div>
         <div class="exit-sub">안전 수칙을 준수하여 완벽한 수리를 완성하세요.</div>
         <button class="restart-btn" onclick="resetApp()">처음으로 돌아가기</button>
     </div>
@@ -221,10 +267,34 @@
     let currentModelData = null;
     let activeTabName = 'machine';
 
+    // 1. 앱 실행 시 스플래시 화면 2초 후 주의사항 화면으로 전환
     setTimeout(() => {
         document.getElementById('splash-screen').classList.remove('active');
-        document.getElementById('main-screen').classList.add('active');
+        document.getElementById('notice-screen').classList.add('active');
+        
+        // 3초 카운트다운 딜레이 시작
+        let timeLeft = 3;
+        const confirmBtn = document.getElementById('confirmBtn');
+        const delayNoticeText = document.getElementById('delayNoticeText');
+        
+        const timer = setInterval(() => {
+            timeLeft--;
+            if (timeLeft > 0) {
+                delayNoticeText.innerText = `3초 후 확인 가능 (${timeLeft})`;
+            } else {
+                clearInterval(timer);
+                delayNoticeText.style.display = 'none';
+                confirmBtn.disabled = false;
+                confirmBtn.classList.add('active');
+            }
+        }, 1000);
     }, 2000);
+
+    // 2. 주의사항 확인 버튼 클릭 시 모델 검색 메인 화면으로 진입
+    function closeNotice() {
+        document.getElementById('notice-screen').classList.remove('active');
+        document.getElementById('main-screen').classList.add('active');
+    }
 
     function searchModel() {
         const query = document.getElementById('modelInput').value.trim().toUpperCase();
