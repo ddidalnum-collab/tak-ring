@@ -5,10 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DDak-Ring (딱-링)</title>
     <link rel="manifest" href="./manifest.json">
-    <link rel="manifest" href="./manifest.json">
-<!-- 앱 아이콘 강제 적용 태그 추가 -->
-<link rel="icon" type="image/jpeg" href="icon.jpg">
-<link rel="apple-touch-icon" href="icon.jpg">
+    <link rel="icon" type="image/jpeg" href="icon.jpg">
+    <link rel="apple-touch-icon" href="icon.jpg">
     
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif; }
@@ -85,12 +83,14 @@
         .modal-content .modal-size { font-size: 14px; color: #e65100; font-weight: bold; margin-bottom: 15px; }
         .close-modal { background: #333; color: white; border: none; padding: 10px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; width: 100%; }
 
-        /* Exit Screen */
+        /* Exit Screen (오늘도 DDAK 화면 & 종료/취소 버튼) */
         #exit-screen { justify-content: center; align-items: center; text-align: center; padding: 30px; background: #ffffff; }
         .exit-icon { font-size: 48px; margin-bottom: 20px; }
-        .exit-title { font-size: 19px; font-weight: bold; color: #333; margin-bottom: 15px; line-height: 1.4; }
-        .exit-sub { font-size: 14px; color: #666; margin-bottom: 30px; }
-        .restart-btn { background: #0076FF; color: white; border: none; padding: 12px 24px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 15px; }
+        .exit-title { font-size: 20px; font-weight: 900; color: #222; margin-bottom: 15px; line-height: 1.4; }
+        .exit-sub { font-size: 14px; color: #666; margin-bottom: 35px; }
+        .exit-actions { display: flex; gap: 12px; width: 100%; max-width: 280px; }
+        .btn-cancel { flex: 1; background: #e0e0e0; color: #333; border: none; padding: 14px 0; border-radius: 8px; font-weight: bold; font-size: 15px; cursor: pointer; }
+        .btn-exit { flex: 1; background: #0076FF; color: white; border: none; padding: 14px 0; border-radius: 8px; font-weight: bold; font-size: 15px; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -104,7 +104,7 @@
         <div class="splash-maker">Made by 디지털남울산</div>
     </div>
 
-    <!-- 2. Notice Warning Screen (드라이어/응축기 사진 위치 변경 완료) -->
+    <!-- 2. Notice Warning Screen -->
     <div id="notice-screen" class="screen">
         <div class="notice-top-bar">DDak-Ring (딱-링)</div>
         <div class="notice-content-area">
@@ -144,7 +144,7 @@
                 </div>
             </div>
             <div class="header-center">디지털남울산</div>
-            <button class="power-btn" onclick="goExit()" title="종료">⏻</button>
+            <button class="power-btn" onclick="openExitScreen()" title="종료">⏻</button>
         </div>
         <div class="content">
             <div class="search-box">
@@ -163,12 +163,15 @@
         </div>
     </div>
 
-    <!-- 4. Exit Screen -->
+    <!-- 4. Exit Screen (오늘도 DDAK! & 종료 / 취소 버튼) -->
     <div id="exit-screen" class="screen">
         <div class="exit-icon">🛠️</div>
         <div class="exit-title">오늘도 DDAK! 맞는 락(Lock)링으로<br>한번에 DDAK! 수리하세요!</div>
         <div class="exit-sub">안전 수칙을 준수하여 완벽한 수리를 완성하세요.</div>
-        <button class="restart-btn" onclick="resetApp()">처음으로 돌아가기</button>
+        <div class="exit-actions">
+            <button class="btn-cancel" onclick="cancelExit()">취소</button>
+            <button class="btn-exit" onclick="confirmExit()">종료</button>
+        </div>
     </div>
 </div>
 
@@ -219,6 +222,12 @@
             },
             { 
                 pattern: "RF85B", series: "4도어 (FDR)", year: "22년형", 
+                fridge: { evapIn: "DA81-10923A", evapInSize: "Ø 6.35 × 6.35", evapOut: "DA81-10930A", evapOutSize: "Ø 8.0 × 6.35", noWeld: "DA81-11148A", noWeldSize: "Ø 6.35 (AL)" }, 
+                freezer: { evapIn: "DA81-10928A", evapInSize: "Ø 6.35 × 4.76", evapOut: "DA81-10931A", evapOutSize: "Ø 8.0 × 8.0", noWeld: "DA81-11153E", noWeldSize: "Ø 8.0 (AL)" }, 
+                varRoom: { evapIn: "DA81-10924A", evapInSize: "Ø 6.35 × 6.35", evapOut: "DA81-10931A", evapOutSize: "Ø 8.0 × 8.0", noWeld: "DA81-11151E", noWeldSize: "Ø 6.35 (AL)" } 
+            },
+            { 
+                pattern: "RF85C", series: "4도어 (비스포크)", year: "23년형", 
                 fridge: { evapIn: "DA81-10923A", evapInSize: "Ø 6.35 × 6.35", evapOut: "DA81-10930A", evapOutSize: "Ø 8.0 × 6.35", noWeld: "DA81-11148A", noWeldSize: "Ø 6.35 (AL)" }, 
                 freezer: { evapIn: "DA81-10928A", evapInSize: "Ø 6.35 × 4.76", evapOut: "DA81-10931A", evapOutSize: "Ø 8.0 × 8.0", noWeld: "DA81-11153E", noWeldSize: "Ø 8.0 (AL)" }, 
                 varRoom: { evapIn: "DA81-10924A", evapInSize: "Ø 6.35 × 6.35", evapOut: "DA81-10931A", evapOutSize: "Ø 8.0 × 8.0", noWeld: "DA81-11151E", noWeldSize: "Ø 6.35 (AL)" } 
@@ -293,10 +302,57 @@
         }, 1000);
     }, 2500);
 
-    // 2. 주의사항 확인 클릭 시 메인 검색 화면으로 전환
+    // 2. 주의사항 확인 클릭 시 메인 검색 화면으로 전환 및 뒤로가기 가로채기 등록
     function closeNotice() {
         document.getElementById('notice-screen').classList.remove('active');
         document.getElementById('main-screen').classList.add('active');
+        
+        // 메인 화면 진입 시 뒤로가기 제어를 위해 가상 히스토리 등록
+        history.pushState({ page: 'main' }, '');
+    }
+
+    // 3. 스마트폰 뒤로가기 버튼(제스처) 감지 이벤트
+    window.addEventListener('popstate', function(event) {
+        const exitScreen = document.getElementById('exit-screen');
+        const modal = document.getElementById('photoModal');
+
+        // 모달창이 열려있다면 모달만 닫기
+        if (modal.style.display === 'flex') {
+            closeModal();
+            history.pushState({ page: 'main' }, '');
+            return;
+        }
+
+        // 이미 종료 화면이 열려있다면 다시 메인으로
+        if (exitScreen.classList.contains('active')) {
+            cancelExit();
+            return;
+        }
+
+        // 메인 화면에서 뒤로가기를 눌렀을 때 시스템 팝업 대신 '오늘도 DDAK' 종료 화면 띄우기
+        openExitScreen();
+    });
+
+    // 종료 화면 열기
+    function openExitScreen() {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.getElementById('exit-screen').classList.add('active');
+    }
+
+    // 취소 버튼: 다시 메인 검색 화면으로 복귀
+    function cancelExit() {
+        document.getElementById('exit-screen').classList.remove('active');
+        document.getElementById('main-screen').classList.add('active');
+        history.pushState({ page: 'main' }, '');
+    }
+
+    // 종료 버튼: 브라우저/앱 종료 시도
+    function confirmExit() {
+        window.close();
+        // 스마트폰 웹뷰에서 window.close()가 막힌 경우 홈 또는 빈페이지 이동
+        setTimeout(() => {
+            history.back();
+        }, 100);
     }
 
     function searchModel() {
@@ -382,18 +438,6 @@
 
     function closeModal() {
         document.getElementById('photoModal').style.display = 'none';
-    }
-
-    function goExit() {
-        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-        document.getElementById('exit-screen').classList.add('active');
-    }
-
-    function resetApp() {
-        document.getElementById('exit-screen').classList.remove('active');
-        document.getElementById('main-screen').classList.add('active');
-        document.getElementById('modelInput').value = '';
-        document.getElementById('resultArea').style.display = 'none';
     }
 </script>
 
